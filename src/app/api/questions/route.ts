@@ -12,10 +12,7 @@ export async function GET(request: NextRequest) {
         );
     }
     const filteredQuestions = mockQuestions.filter((mockQuestion) => {
-        return (
-            mockQuestion.category.toLocaleLowerCase() ===
-            category.toLocaleLowerCase()
-        );
+        return mockQuestion.category.toLowerCase() === category.toLowerCase();
     });
     return Response.json(filteredQuestions);
 }

@@ -14,10 +14,18 @@ export default function GameBoard() {
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [questions, setQuestions] = useState([]);
+     const [hiddenOptions, setHiddenOptions] = useState<string[]>([]);
+     const [usedFiftyFifty, setUsedFiftyFifty] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         // We create an async function inside useEffect to handle the Promise
         const loadQuestions = async () => {
+            if (!selectedCategory) {
+                router.push("/");
+                return;
+            }
+
             try {
                 // YOUR TURN: Write the fetch() call to "/api/questions"
                 // Await the response, parse the .json(), and put it in the setQuestions state!
@@ -50,6 +58,38 @@ if (!response.ok) {
         );
     }
     const currentQuestion = questions[currentQuestionIndex];
+
+
+    const handleFiftyFifty = () => {
+        // 1. Guard Clause: If they already used it, do nothing!
+        if (usedFiftyFifty) return;
+
+        // 2. Find the wrong answers!
+        // YOUR TURN: Use .filter() on currentQuestion.options to return an array of
+        // ALL options that do NOT equal currentQuestion.correctAnswer
+        const wrongOptions = currentQuestion.options.filter((option: any) => {
+            return (
+                option.toLowerCase() !==
+                currentQuestion.correctAnswer.toLowerCase()
+            );
+        });
+
+        // 3. The Shuffle Hack
+        // We shuffle the wrong options randomly so we don't always delete the first two!
+        const shuffledWrongOptions = wrongOptions.sort(
+            () => Math.random() - 0.5,
+        );
+
+        // 4. Grab the first two from the shuffled array
+        const optionsToHide = [
+            shuffledWrongOptions[0],
+            shuffledWrongOptions[1],
+        ];
+
+        // 5. Update State!
+        setHiddenOptions(optionsToHide);
+        setUsedFiftyFifty(true);
+    };
     const handleAnswerClick = (option: string) => {
         // 1. Lock the board immediately
         if (selectedAnswer !== null) return;
@@ -77,26 +117,36 @@ if (!response.ok) {
                 // Wrong answer! Route to Game Over
                 router.push("/game-over");
             }
+            setHiddenOptions([]);
         }, 1500);
     };
     return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
+            1
             <div className="w-full max-w-2xl bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-2xl">
                 {/* THE HUD */}
                 <div className="flex justify-between text-slate-400 mb-6 text-sm font-bold uppercase tracking-wider">
                     <span>Category: {currentQuestion.category}</span>
                     <span>Level: {currentQuestion.level}</span>
                 </div>
-
                 {/* THE QUESTION */}
                 <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 leading-relaxed">
                     {currentQuestion.question}
                 </h2>
-
+                <button
+                    onClick={handleFiftyFifty}
+                    className="mb-6 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
+                >
+                    rm -rf 50%
+                </button>{" "}
                 {/* THE OPTIONS GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {currentQuestion.options.map((option, index) => {
-                        // COLOR LOGIC: Handled directly inside the map so Tailwind can't ignore it!
+                        if (hiddenOptions.includes(option)) {
+                            return (
+                                <div key={index} className="invisible"></div>
+                            );
+                        }
                         let btnColor =
                             "bg-blue-600 hover:bg-blue-500 border border-blue-500";
 
