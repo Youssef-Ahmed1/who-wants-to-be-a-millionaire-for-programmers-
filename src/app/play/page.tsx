@@ -6,9 +6,8 @@ import { useGameStore } from "../../../store";
 
 export default function GameBoard() {
     const router = useRouter();
-
     // Global Store
-    const { incrementScore } = useGameStore();
+   const { incrementScore, selectedCategory } = useGameStore();
 
     // Local State
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -22,10 +21,11 @@ export default function GameBoard() {
             try {
                 // YOUR TURN: Write the fetch() call to "/api/questions"
                 // Await the response, parse the .json(), and put it in the setQuestions state!
-                const response = await fetch("/api/questions");
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`);
-                }
+const url = `/api/questions?category=${encodeURIComponent(selectedCategory)}`;
+const response = await fetch(url);
+if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+}
 
                 const result = await response.json();
                 setQuestions(result);
