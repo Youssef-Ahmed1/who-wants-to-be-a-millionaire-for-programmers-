@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { useGameStore } from "../../store";
 import { useRouter } from 'next/navigation';
-
+import { seedDatabase } from "@/lib/actions";
 export default function Home() {
 const { setCategory   } = useGameStore();
 const router = useRouter();
@@ -41,7 +41,7 @@ const router = useRouter();
                       className="w-full
             bg-blue-600 hover:bg-blue-700"
                   >
-                      Frontend Mastery
+                      Frontend path
                   </Button>
                   <Button
                       onClick={() => handleClick("Backend Architecture")}
@@ -67,8 +67,18 @@ const router = useRouter();
                   >
                       Full-Stack mix
                   </Button>
+
+                  <Button
+                      onClick={async () => {
+                          await seedDatabase();
+                          alert("Database Seeded!");
+                      }}
+                      variant="destructive"
+                      className="mb-8"
+                  >
+                      🔥 SEED DATABASE
+                  </Button>
               </CardContent>
-              //
           </Card>
       </main>
   );
