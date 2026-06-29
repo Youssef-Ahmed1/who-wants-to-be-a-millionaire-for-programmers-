@@ -7,21 +7,19 @@ import { Question } from "@/types";
 export default function GameBoard() {
     const router = useRouter();
     // Global Store
-   const { incrementScore, selectedCategory } = useGameStore();
-
+    const { incrementScore, selectedCategory } = useGameStore();
+    //
     // Local State
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-const [questions, setQuestions] = useState<Question[]>([]);
-     const [hiddenOptions, setHiddenOptions] = useState<string[]>([]);
-     const [usedFiftyFifty, setUsedFiftyFifty] = useState(false);
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [hiddenOptions, setHiddenOptions] = useState<string[]>([]);
+    const [usedFiftyFifty, setUsedFiftyFifty] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-const [showAudienceModal, setShowAudienceModal] = useState(false);
-const [audienceVotes, setAudienceVotes] = useState<number[]>([]);
-const [usedAudience, setUsedAudience] = useState(false);
-
-
+    const [showAudienceModal, setShowAudienceModal] = useState(false);
+    const [audienceVotes, setAudienceVotes] = useState<number[]>([]);
+    const [usedAudience, setUsedAudience] = useState(false);
 
     useEffect(() => {
         const loadQuestions = async () => {
@@ -61,47 +59,49 @@ const [usedAudience, setUsedAudience] = useState(false);
     }
     const currentQuestion = questions[currentQuestionIndex];
 
-const generateStackOverflowVotes = (currentQuestion: any) => {
-    const correctIndex = currentQuestion.options.findIndex(
-        (option: string) => option == currentQuestion.correctAnswer,
-    );
-    let correctPercentage = 0;
+    const generateStackOverflowVotes = (currentQuestion: any) => {
+        const correctIndex = currentQuestion.options.findIndex(
+            (option: string) => option == currentQuestion.correctAnswer,
+        );
+        let correctPercentage = 0;
 
-    currentQuestion.correctAnswer.toLowerCase();
-    if (currentQuestion.level == 1) {
-        correctPercentage = Math.floor(Math.random() * (95 - 85 + 1)) + 85;
-    } else if (currentQuestion.level == 2) {
-        correctPercentage = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
-    } else {
-        correctPercentage = Math.floor(Math.random() * (40 - 60 + 1)) + 40;
-    }
-
-    let remainingPercentage = 100 - correctPercentage;
-    let votes = [0, 0, 0, 0];
-    votes[correctIndex] = correctPercentage;
-    for (let i = 0; i < 4; i++) {
-        if (i !== correctIndex) {
-            const randomChunk = Math.floor(Math.random() * remainingPercentage);
-            votes[i] = randomChunk;
-            remainingPercentage -= randomChunk;
+        currentQuestion.correctAnswer.toLowerCase();
+        if (currentQuestion.level == 1) {
+            correctPercentage = Math.floor(Math.random() * (95 - 85 + 1)) + 85;
+        } else if (currentQuestion.level == 2) {
+            correctPercentage = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
+        } else {
+            correctPercentage = Math.floor(Math.random() * (40 - 60 + 1)) + 40;
         }
-    }
-    return votes;
-};
 
-const handleAskAudience = () => {
-    if (usedAudience) return; // Prevent double use!
+        let remainingPercentage = 100 - correctPercentage;
+        let votes = [0, 0, 0, 0];
+        votes[correctIndex] = correctPercentage;
+        for (let i = 0; i < 4; i++) {
+            if (i !== correctIndex) {
+                const randomChunk = Math.floor(
+                    Math.random() * remainingPercentage,
+                );
+                votes[i] = randomChunk;
+                remainingPercentage -= randomChunk;
+            }
+        }
+        return votes;
+    };
 
-    // 1. Generate the math
-    const votes = generateStackOverflowVotes(currentQuestion);
+    const handleAskAudience = () => {
+        if (usedAudience) return; // Prevent double use!
 
-    // 2. Save it to state so the UI can draw the bar chart
-    setAudienceVotes(votes);
+        // 1. Generate the math
+        const votes = generateStackOverflowVotes(currentQuestion);
 
-    // 3. Show the popup!
-    setShowAudienceModal(true);
-    setUsedAudience(true);
-};
+        // 2. Save it to state so the UI can draw the bar chart
+        setAudienceVotes(votes);
+
+        // 3. Show the popup!
+        setShowAudienceModal(true);
+        setUsedAudience(true);
+    };
     const handleFiftyFifty = () => {
         // 1. Guard Clause: If they already used it, do nothing!
         if (usedFiftyFifty) return;
