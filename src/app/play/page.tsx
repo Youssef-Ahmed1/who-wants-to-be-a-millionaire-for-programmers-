@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "../../../store";
-
+import { Question } from "@/types";
 export default function GameBoard() {
     const router = useRouter();
     // Global Store
@@ -13,13 +13,17 @@ export default function GameBoard() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-    const [questions, setQuestions] = useState([]);
+const [questions, setQuestions] = useState<Question[]>([]);
      const [hiddenOptions, setHiddenOptions] = useState<string[]>([]);
      const [usedFiftyFifty, setUsedFiftyFifty] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+const [showAudienceModal, setShowAudienceModal] = useState(false);
+const [audienceVotes, setAudienceVotes] = useState<number[]>([]);
+const [usedAudience, setUsedAudience] = useState(false);
+
+
 
     useEffect(() => {
-        // We create an async function inside useEffect to handle the Promise
         const loadQuestions = async () => {
             if (!selectedCategory) {
                 router.push("/");
@@ -27,13 +31,11 @@ export default function GameBoard() {
             }
 
             try {
-                // YOUR TURN: Write the fetch() call to "/api/questions"
-                // Await the response, parse the .json(), and put it in the setQuestions state!
-const url = `/api/questions?category=${encodeURIComponent(selectedCategory)}`;
-const response = await fetch(url);
-if (!response.ok) {
-    throw new Error(`Response status: ${response.status}`);
-}
+                const url = `/api/questions?category=${encodeURIComponent(selectedCategory)}`;
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
 
                 const result = await response.json();
                 setQuestions(result);
@@ -59,14 +61,51 @@ if (!response.ok) {
     }
     const currentQuestion = questions[currentQuestionIndex];
 
+const generateStackOverflowVotes = (currentQuestion: any) => {
+    const correctIndex = currentQuestion.options.findIndex(
+        (option: string) => option == currentQuestion.correctAnswer,
+    );
+    let correctPercentage = 0;
 
+    currentQuestion.correctAnswer.toLowerCase();
+    if (currentQuestion.level == 1) {
+        correctPercentage = Math.floor(Math.random() * (95 - 85 + 1)) + 85;
+    } else if (currentQuestion.level == 2) {
+        correctPercentage = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
+    } else {
+        correctPercentage = Math.floor(Math.random() * (40 - 60 + 1)) + 40;
+    }
+
+    let remainingPercentage = 100 - correctPercentage;
+    let votes = [0, 0, 0, 0];
+    votes[correctIndex] = correctPercentage;
+    for (let i = 0; i < 4; i++) {
+        if (i !== correctIndex) {
+            const randomChunk = Math.floor(Math.random() * remainingPercentage);
+            votes[i] = randomChunk;
+            remainingPercentage -= randomChunk;
+        }
+    }
+    return votes;
+};
+
+const handleAskAudience = () => {
+    if (usedAudience) return; // Prevent double use!
+
+    // 1. Generate the math
+    const votes = generateStackOverflowVotes(currentQuestion);
+
+    // 2. Save it to state so the UI can draw the bar chart
+    setAudienceVotes(votes);
+
+    // 3. Show the popup!
+    setShowAudienceModal(true);
+    setUsedAudience(true);
+};
     const handleFiftyFifty = () => {
         // 1. Guard Clause: If they already used it, do nothing!
         if (usedFiftyFifty) return;
 
-        // 2. Find the wrong answers!
-        // YOUR TURN: Use .filter() on currentQuestion.options to return an array of
-        // ALL options that do NOT equal currentQuestion.correctAnswer
         const wrongOptions = currentQuestion.options.filter((option: any) => {
             return (
                 option.toLowerCase() !==
@@ -74,13 +113,10 @@ if (!response.ok) {
             );
         });
 
-        // 3. The Shuffle Hack
-        // We shuffle the wrong options randomly so we don't always delete the first two!
         const shuffledWrongOptions = wrongOptions.sort(
             () => Math.random() - 0.5,
         );
 
-        // 4. Grab the first two from the shuffled array
         const optionsToHide = [
             shuffledWrongOptions[0],
             shuffledWrongOptions[1],
@@ -114,7 +150,6 @@ if (!response.ok) {
                     setIsCorrect(null);
                 }
             } else {
-                // Wrong answer! Route to Game Over
                 router.push("/game-over");
             }
             setHiddenOptions([]);
@@ -139,6 +174,12 @@ if (!response.ok) {
                 >
                     rm -rf 50%
                 </button>{" "}
+                <button
+                    onClick={handleAskAudience}
+                    className="mb-6 bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
+                >
+                    Ask StackOverflow
+                </button>
                 {/* THE OPTIONS GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {currentQuestion.options.map((option, index) => {
@@ -175,6 +216,51 @@ if (!response.ok) {
                     })}
                 </div>
             </div>
+            {/* THE STACKOVERFLOW MODAL */}
+            {showAudienceModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+                        <h2 className="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-2">
+                            StackOverflow Says...
+                        </h2>
+
+                        <div className="flex flex-col gap-6">
+                            {currentQuestion.options.map((option, index) => (
+                                <div
+                                    key={index}
+                                    className="flex flex-col gap-2"
+                                >
+                                    <div className="flex justify-between text-sm text-slate-300">
+                                        <span className="truncate pr-4">
+                                            {option}
+                                        </span>
+                                        <span className="font-bold text-white">
+                                            {audienceVotes[index]}%
+                                        </span>
+                                    </div>
+
+                                    {/* THE PROGRESS BAR */}
+                                    <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-blue-500 transition-all duration-1000 ease-out"
+                                            style={{
+                                                width: `${audienceVotes[index]}%`,
+                                            }}
+                                        ></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={() => setShowAudienceModal(false)}
+                            className="mt-8 w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
+                        >
+                            Close Window
+                        </button>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }
