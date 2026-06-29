@@ -4,7 +4,7 @@
 import { connectToDatabase } from "./mongodb";
 import { Question } from "../models/Question";
 import { mockQuestions } from "../data/mockQuestions";
-
+import { signIn } from "@/auth";
 
 export async function seedDatabase() {
     try {
@@ -21,6 +21,17 @@ export async function seedDatabase() {
     } catch (error) {
         console.error("Seeding Error:", error);
         throw new Error("Failed to seed database");
+    }
+}
+
+export async function authenticate(formData: FormData) {
+    try {
+        await signIn("credentials", formData);
+    } catch (error) {
+        if ((error as any).type == "CredentialsSignin") {
+            return "Invalid credentials";
+        }
+        throw error;
     }
 }
 export async function getRandomQuestions(category: string) {
