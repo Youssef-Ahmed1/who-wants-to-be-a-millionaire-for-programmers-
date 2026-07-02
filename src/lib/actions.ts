@@ -63,7 +63,7 @@ export async function authenticate(formData: FormData) {
         await signIn("credentials", { ...formValues, redirectTo: "/" });
     } catch (error) {
         if ((error as any).type === "CredentialsSignin") {
-            return "Invalid credentials.";
+            throw new Error("Invalid credentials.");
         }
         throw error;
     }

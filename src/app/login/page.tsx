@@ -1,7 +1,6 @@
 // src/app/login/page.tsx
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-// We will import our login Server Action here in Step 2!
 import { authenticate } from "@/lib/actions";
 export default function LoginPage() {
   return (
