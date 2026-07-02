@@ -7,7 +7,7 @@ import {
     CardContent,
 } from "@/components/ui/card";
 import CategoryButtons from "../components/ui/CategoryButtons"; // Import the client component!
-
+import Link from "next/link";
 export default async function Home() {
     const session = await auth();
 
@@ -31,6 +31,13 @@ export default async function Home() {
 
             <Card className="w-full max-w-md bg-slate-900 border-slate-800">
                 <CardHeader className="text-center">
+                    <br />
+                    <Link
+                        href="/leaderboard"
+                        className="text-xl text-emerald-400"
+                    >
+                        hall of fame
+                    </Link>
                     <CardTitle className="text-2xl text-white">
                         Select Your Discipline
                     </CardTitle>

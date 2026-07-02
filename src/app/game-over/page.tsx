@@ -18,9 +18,8 @@ export default function GameOver() {
       setIsSaving(true);
 
       try {
-          // Call your Server Action!
           await saveHighScore(score);
-          setSaved(true); // Success!
+          setSaved(true);
       } catch (error) {
           console.error("Failed to save:", error);
       } finally {
