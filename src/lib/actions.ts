@@ -78,3 +78,35 @@ export async function getRandomQuestions(category: string) {
         throw new Error("Failed to fetch questions");
     }
 }
+
+export async function registerUser(formData: FormData) {
+    try {
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+        if (!name || !email! || password) {
+            return { error: "all fields are required." };
+        }
+        if (password.length < 8) {
+            return { error: "password must be at least 8 characters." };
+        }
+        await connectToDatabase();
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return { error: "password must be at least 8 characters." };
+        }
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            highScore: 0,
+        });
+        return { success: true };
+    } catch (error: any) {
+        console.error("Registration Error:", error);
+        return { error: "Failed to register user." };
+    }
+}
