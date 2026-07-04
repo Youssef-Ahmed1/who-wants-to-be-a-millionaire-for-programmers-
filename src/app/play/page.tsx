@@ -71,7 +71,7 @@ export default function GameBoard() {
         } else if (currentQuestion.level == 2) {
             correctPercentage = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
         } else {
-            correctPercentage = Math.floor(Math.random() * (40 - 60 + 1)) + 40;
+            correctPercentage = Math.floor(Math.random() * (60 - 40 + 1)) + 40;
         }
 
         let remainingPercentage = 100 - correctPercentage;

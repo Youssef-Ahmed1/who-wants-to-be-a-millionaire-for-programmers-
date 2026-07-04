@@ -1,5 +1,5 @@
 // src/lib/actions.ts
-"use server"; // THIS IS MANDATORY!
+"use server";
 
 import { connectToDatabase } from "./mongodb";
 import { Question } from "../models/Question";
@@ -15,7 +15,7 @@ export async function seedDatabase() {
         await Question.deleteMany({});
         await User.deleteMany({});
 
-        const hashedPassword = await bcrypt.hash("password123", 10);
+        const hashedPassword = await bcrypt.hash("smileyCat123", 10);
 
         await User.create({
             name: "Senior Engineer",
@@ -29,7 +29,7 @@ export async function seedDatabase() {
         return { success: true };
     } catch (error) {
         console.error("Seeding Error:", error);
-        throw new Error("Failed to seed database");
+                return { error: "Failed to seed database" };
     }
 }
 export async function saveHighScore(newScore: number) {
@@ -37,7 +37,7 @@ export async function saveHighScore(newScore: number) {
     const session = await auth();
 
     if (!session?.user?.email) {
-        throw new Error("Must be logged in to save score");
+        return { error: "Must be logged in to save score" };
     }
 
     const user = await User.findOne({ email: session.user.email });
@@ -59,7 +59,8 @@ export async function authenticate(formData: FormData) {
         await signIn("credentials", { ...formValues, redirectTo: "/" });
     } catch (error) {
         if ((error as any).type === "CredentialsSignin") {
-            throw new Error("Invalid credentials.");
+        return { error: "Invalid credentials." };
+
         }
         throw error;
     }
@@ -75,7 +76,8 @@ export async function getRandomQuestions(category: string) {
         return JSON.parse(JSON.stringify(randomQuestions));
     } catch (error) {
         console.error("Database Error:", error);
-        throw new Error("Failed to fetch questions");
+                return { error: "Failed to fetch questions" };
+
     }
 }
 
@@ -84,9 +86,9 @@ export async function registerUser(formData: FormData) {
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
-        if (!name || !email! || password) {
-            return { error: "all fields are required." };
-        }
+       if (!name || !email || !password) {
+           return { error: "All fields are required." };
+       }
         if (password.length < 8) {
             return { error: "password must be at least 8 characters." };
         }
@@ -94,7 +96,7 @@ export async function registerUser(formData: FormData) {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return { error: "password must be at least 8 characters." };
+            return { error: "An account with this email already exists." };
         }
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
