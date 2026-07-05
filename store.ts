@@ -3,7 +3,7 @@ import {create} from 'zustand'
 interface GameState {
     selectedCategory: string | null;
     score: number;
-    setCategory: (cateogry: string) => void;
+    setCategory: (category: string) => void;
     incrementScore: () => void;
     resetGame: () => void;
 }

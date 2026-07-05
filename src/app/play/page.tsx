@@ -20,7 +20,11 @@ export default function GameBoard() {
     const [showAudienceModal, setShowAudienceModal] = useState(false);
     const [audienceVotes, setAudienceVotes] = useState<number[]>([]);
     const [usedAudience, setUsedAudience] = useState(false);
-
+    const [usedPhoneFriend, setUsedPhoneFriend] = useState(false);
+    const [phoneFriendMessage, setPhoneFriendMessage] = useState<string | null>(
+        null,
+    );
+    const [showPhoneModal, setShowPhoneModal] = useState(false);
     useEffect(() => {
         const loadQuestions = async () => {
             if (!selectedCategory) {
@@ -155,9 +159,61 @@ export default function GameBoard() {
             setHiddenOptions([]);
         }, 1500);
     };
+    const generatePhoneFriendResponse = (level: number) => {
+        // 1. Define your response arrays for each level
+        const level1Responses = [
+            "Why are you asking this? It's literally the first result on Google. Anyway, I think it's {correctAnswer}. Seriously, just read the docs.",
+            "Dude. This is basic. I'm almost offended you called. It's {correctAnswer}. Go back to tutorial hell.",
+            "Let me get this straight. You called me for *that* question? It's {correctAnswer}. Please tell me you're joking.",
+        ];
+
+        const level2Responses = [
+            "Good question. Not trivial, but you should know this. I'm leaning toward {correctAnswer}. Definitely worth reviewing the fundamentals.",
+            "Solid question. I like the direction. I think it's {correctAnswer}, but double-check the edge cases.",
+            "This is where the rubber meets the road. I'd say {correctAnswer} is your answer. Nice work thinking about this.",
+        ];
+
+        const level3Responses = [
+            "That's a beautiful question. I genuinely respect the depth here. This is senior-level stuff. I think it's {correctAnswer}, but you should absolutely research this topic deeper.",
+            "Whoa. Okay. This is the good stuff. I'm impressed you're even asking this. I'd go with {correctAnswer} personally. Keep digging into this area.",
+            "Finally, a real question. This is the kind of thing that separates engineers. I'm leaning toward {correctAnswer}. This is a fantastic rabbit hole to explore.",
+        ];
+        // 2. Pick a random response from the appropriate array
+        let selectedResponse;
+        if (level === 1) {
+            selectedResponse =
+                level1Responses[
+                    Math.floor(Math.random() * level1Responses.length)
+                ];
+        } else if (level === 2) {
+            selectedResponse =
+                level2Responses[
+                    Math.floor(Math.random() * level2Responses.length)
+                ];
+        } else {
+            selectedResponse =
+                level3Responses[
+                    Math.floor(Math.random() * level3Responses.length)
+                ];
+        }
+        return selectedResponse;
+    };
+    const handlePhoneFriend = () => {
+        if (usedPhoneFriend) return;
+
+        const rawMessage = generatePhoneFriendResponse(currentQuestion.level);
+        const finalMessage = rawMessage.replace(
+            /\{correctAnswer\}/g,
+            currentQuestion.correctAnswer,
+        );
+
+        setPhoneFriendMessage(finalMessage);
+        setShowPhoneModal(true);
+        setUsedPhoneFriend(true);
+    };
+
     return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
-            1
             <div className="w-full max-w-2xl bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-2xl">
                 {/* THE HUD */}
                 <div className="flex justify-between text-slate-400 mb-6 text-sm font-bold uppercase tracking-wider">
@@ -179,6 +235,12 @@ export default function GameBoard() {
                     className="mb-6 bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
                 >
                     Ask StackOverflow
+                </button>
+                <button
+                    onClick={handlePhoneFriend}
+                    className="mb-6 bg-purple-500 hover:bg-purple-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
+                >
+                    📱 Phone a Friend
                 </button>
                 {/* THE OPTIONS GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -216,7 +278,7 @@ export default function GameBoard() {
                     })}
                 </div>
             </div>
-            {/* THE STACKOVERFLOW MODAL */}
+            {/* STACKOVERFLOW MODAL */}
             {showAudienceModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
                     <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
@@ -238,8 +300,6 @@ export default function GameBoard() {
                                             {audienceVotes[index]}%
                                         </span>
                                     </div>
-
-                                    {/* THE PROGRESS BAR */}
                                     <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-blue-500 transition-all duration-1000 ease-out"
@@ -257,6 +317,27 @@ export default function GameBoard() {
                             className="mt-8 w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
                         >
                             Close Window
+                        </button>
+                    </div>
+                </div>
+            )}
+            {/*  5. Modal (CORRECT - DISPLAYS TEXT, NOT BAR CHART) */}
+            {showPhoneModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+                        <h2 className="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                            🧙‍♂️ Your Senior Dev Friend Says...
+                        </h2>
+                        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <p className="text-white text-lg leading-relaxed italic">
+                                "{phoneFriendMessage}"
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => setShowPhoneModal(false)}
+                            className="mt-6 w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
+                        >
+                            Close
                         </button>
                     </div>
                 </div>
