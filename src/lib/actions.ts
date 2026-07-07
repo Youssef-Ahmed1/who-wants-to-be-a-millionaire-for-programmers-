@@ -53,14 +53,19 @@ export async function saveHighScore(newScore: number) {
 }
 
 
-export async function authenticate(formData: FormData) {
+export async function authenticate(prevState: any, formData: FormData) {
     try {
         const formValues = Object.fromEntries(formData);
         await signIn("credentials", { ...formValues, redirectTo: "/" });
+        return { error: null };
     } catch (error) {
-        if ((error as any).type === "CredentialsSignin") {
-        return { error: "Invalid credentials." };
-
+        if (
+            error &&
+            typeof error === "object" &&
+            "type" in error &&
+            error.type === "CredentialsSignin"
+        ) {
+            return { error: "Invalid credentials." };
         }
         throw error;
     }

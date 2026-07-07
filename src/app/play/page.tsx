@@ -63,7 +63,7 @@ export default function GameBoard() {
     }
     const currentQuestion = questions[currentQuestionIndex];
 
-    const generateStackOverflowVotes = (currentQuestion: any) => {
+    const generateStackOverflowVotes = (currentQuestion: Question) => {
         const correctIndex = currentQuestion.options.findIndex(
             (option: string) => option == currentQuestion.correctAnswer,
         );
@@ -110,12 +110,14 @@ export default function GameBoard() {
         // 1. Guard Clause: If they already used it, do nothing!
         if (usedFiftyFifty) return;
 
-        const wrongOptions = currentQuestion.options.filter((option: any) => {
-            return (
-                option.toLowerCase() !==
-                currentQuestion.correctAnswer.toLowerCase()
-            );
-        });
+        const wrongOptions = currentQuestion.options.filter(
+            (option: string) => {
+                return (
+                    option.toLowerCase() !==
+                    currentQuestion.correctAnswer.toLowerCase()
+                );
+            },
+        );
 
         const shuffledWrongOptions = wrongOptions.sort(
             () => Math.random() - 0.5,
