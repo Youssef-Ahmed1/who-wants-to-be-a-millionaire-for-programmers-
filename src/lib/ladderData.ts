@@ -1,0 +1,17 @@
+export const ladderSteps = [
+  { id: 1, title: "Applicant", salary: "$100" },
+  { id: 2, title: "Bootcamp Grad", salary: "$200" },
+  { id: 3, title: "Intern I", salary: "$300" },
+  { id: 4, title: "Intern II", salary: "$500" },
+  { id: 5, title: "Junior Engineer I", salary: "$1,000" },
+  { id: 6, title: "Junior Engineer II", salary: "$2,000" },
+  { id: 7, title: "Associate Engineer", salary: "$4,000" },
+  { id: 8, title: "Engineer I", salary: "$8,000" },
+  { id: 9, title: "Engineer II", salary: "$16,000" },
+  { id: 10, title: "Senior Engineer I", salary: "$32,000" },
+  { id: 11, title: "Senior Engineer II", salary: "$64,000" },
+  { id: 12, title: "Lead Engineer", salary: "$125,000" },
+  { id: 13, title: "Staff Engineer", salary: "$250,000" },
+  { id: 14, title: "Principal Engineer", salary: "$500,000" },
+  { id: 15, title: "CTO 🏆", salary: "$1,000,000" },
+];
