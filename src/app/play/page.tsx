@@ -7,12 +7,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "../../../store";
 import { Question } from "@/types";
+
+
 export default function GameBoard() {
     const router = useRouter();
-    // Global Store
     const { incrementScore, selectedCategory } = useGameStore();
-    //
-    // Local State
+
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -28,6 +28,8 @@ export default function GameBoard() {
         null,
     );
     const [showPhoneModal, setShowPhoneModal] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(15);
+    const [isTimerActive, setIsTimerActive] = useState(true);
     useEffect(() => {
         const loadQuestions = async () => {
             if (!selectedCategory) {
@@ -55,6 +57,38 @@ export default function GameBoard() {
         loadQuestions();
     }, []);
 
+useEffect(() => {
+    if (selectedAnswer !== null || !isTimerActive) return;
+
+    const interval = setInterval(() => {
+        setTimeLeft((prev) => {
+            if (prev <= 1) {
+                clearInterval(interval);
+                handleTimeout();
+                return 0;
+            }
+            return prev - 1;
+        });
+    }, 1000);
+
+    return () => clearInterval(interval);
+}, [currentQuestionIndex, selectedAnswer, isTimerActive]);
+
+useEffect(() => {
+    setTimeLeft(15);
+    setIsTimerActive(true);
+}, [currentQuestionIndex]);
+const handleTimeout = () => {
+    if (selectedAnswer !== null) return;
+
+    setIsCorrect(false);
+    setSelectedAnswer("⏰ Timeout!");
+
+    setTimeout(() => {
+        router.push("/game-over");
+    }, 1500);
+};
+
     if (isLoading || questions.length === 0) {
         return (
             <main className="min-h-screen flex items-center justify-center bg-slate-950 text-white p-4">
@@ -67,12 +101,10 @@ export default function GameBoard() {
     const currentQuestion = questions[currentQuestionIndex];
 
     const handleAskAudience = () => {
-        if (usedAudience) return; // Prevent double use!
+        if (usedAudience) return;
 
-        // 1. Generate the math
         const votes = generateStackOverflowVotes(currentQuestion);
 
-        // 2. Save it to state so the UI can draw the bar chart
         setAudienceVotes(votes);
 
         // 3. Show the popup!
@@ -155,6 +187,11 @@ export default function GameBoard() {
                 {/* THE HUD */}
                 <div className="flex justify-between text-slate-400 mb-6 text-sm font-bold uppercase tracking-wider">
                     <span>Category: {currentQuestion.category}</span>
+                    <span
+                        className={`font-mono text-xl ${timeLeft <= 5 ? "text-red-500 animate-pulse" : "text-emerald-400"}`}
+                    >
+                        ⏱️ {timeLeft}s
+                    </span>
                     <span>Level: {currentQuestion.level}</span>
                 </div>
                 {/* THE QUESTION */}
