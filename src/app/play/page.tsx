@@ -57,37 +57,37 @@ export default function GameBoard() {
         loadQuestions();
     }, []);
 
-useEffect(() => {
-    if (selectedAnswer !== null || !isTimerActive) return;
+    useEffect(() => {
+        if (selectedAnswer !== null || !isTimerActive) return;
 
-    const interval = setInterval(() => {
-        setTimeLeft((prev) => {
-            if (prev <= 1) {
-                clearInterval(interval);
-                handleTimeout();
-                return 0;
-            }
-            return prev - 1;
-        });
-    }, 1000);
+        const interval = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    handleTimeout();
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
 
-    return () => clearInterval(interval);
-}, [currentQuestionIndex, selectedAnswer, isTimerActive]);
+        return () => clearInterval(interval);
+    }, [currentQuestionIndex, selectedAnswer, isTimerActive]);
 
-useEffect(() => {
-    setTimeLeft(15);
-    setIsTimerActive(true);
-}, [currentQuestionIndex]);
-const handleTimeout = () => {
-    if (selectedAnswer !== null) return;
+    useEffect(() => {
+        setTimeLeft(15);
+        setIsTimerActive(true);
+    }, [currentQuestionIndex]);
+    const handleTimeout = () => {
+        if (selectedAnswer !== null) return;
 
-    setIsCorrect(false);
-    setSelectedAnswer("⏰ Timeout!");
+        setIsCorrect(false);
+        setSelectedAnswer("⏰ Timeout!");
 
-    setTimeout(() => {
-        router.push("/game-over");
-    }, 1500);
-};
+        setTimeout(() => {
+            router.push("/game-over");
+        }, 1500);
+    };
 
     if (isLoading || questions.length === 0) {
         return (
@@ -180,7 +180,7 @@ const handleTimeout = () => {
         setShowPhoneModal(true);
         setUsedPhoneFriend(true);
     };
-
+    //
     return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
             <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 items-start">
