@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useGameStore } from "../../../store";
 import { Question } from "@/types";
 import ProgressLadder from "@/components/ProgressLadder";
-
+import { playCorrect, playWrong, playTick, stopTick } from "@/lib/sound";
 export default function GameBoard() {
     const router = useRouter();
     const { incrementScore, selectedCategory } = useGameStore();
@@ -75,12 +75,14 @@ export default function GameBoard() {
     }, [currentQuestionIndex, selectedAnswer, isTimerActive]);
 
     useEffect(() => {
+stopTick();
         setTimeLeft(15);
         setIsTimerActive(true);
     }, [currentQuestionIndex]);
     const handleTimeout = () => {
-        if (selectedAnswer !== null) return;
-
+  if (selectedAnswer !== null) return;
+    stopTick();
+    playWrong();
         setIsCorrect(false);
         setSelectedAnswer("⏰ Timeout!");
 
@@ -89,6 +91,17 @@ export default function GameBoard() {
         }, 1500);
     };
 
+    useEffect(() => {
+        if (timeLeft <= 5 && timeLeft > 0) {
+            playTick();
+        }
+    }, [timeLeft]);
+
+    useEffect(() => {
+        return () => {
+            stopTick();
+        };
+    }, []);
     if (isLoading || questions.length === 0) {
         return (
             <main className="min-h-screen flex items-center justify-center bg-slate-950 text-white p-4">
@@ -139,8 +152,8 @@ export default function GameBoard() {
     };
     const handleAnswerClick = (option: string) => {
         // 1. Lock the board immediately
-        if (selectedAnswer !== null) return;
-
+    if (selectedAnswer !== null) return;
+    stopTick();
         // 2. Do the math & update UI state
         const correct = option === currentQuestion.correctAnswer;
         setIsCorrect(correct);
@@ -150,7 +163,7 @@ export default function GameBoard() {
         setTimeout(() => {
             if (correct) {
                 incrementScore();
-
+    playCorrect();
                 // Did we beat the game?
                 if (currentQuestionIndex + 1 >= questions.length) {
                     router.push("/game-over");
@@ -161,6 +174,7 @@ export default function GameBoard() {
                     setIsCorrect(null);
                 }
             } else {
+                playWrong();
                 router.push("/game-over");
             }
             setHiddenOptions([]);
