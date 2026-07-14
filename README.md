@@ -1,5 +1,4 @@
 
-```markdown
 #  Who Wants To Be A Developer?
 
 
@@ -48,8 +47,8 @@
 
 ## Screenshots
 
-![Gameplay Screenshot](public/images/image_for_who_wants_to_be_a_millionaire.png)
-![Gameplay Screenshot 2](public/images/image_for_who_wants_to_be_a_millionaire2.png)
+![Gameplay Screenshot](public/images/image_for_who_wants_to_be_a_millionaire.png),
+![Gameplay Screenshot 2](public/images/image_for_who_wants_to_be_a_millionaire_2.png)
 ---
 
 ## Getting Started (Local Development)
@@ -136,7 +135,6 @@ GITHUB: https://github.com/Youssef-Ahmed1 |
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
-```
 
 
 
