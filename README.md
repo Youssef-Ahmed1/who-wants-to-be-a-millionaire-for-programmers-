@@ -32,16 +32,16 @@ I built this to be a more fun way to consume knowldege a flashcards like project
 ##  Core Features
 
 
-- ** Timed Questions:** 15-second countdown with auto-fail and ticking sound effects.
-- ** Career Ladder:** Progression from "Applicant" to "CTO" with salary milestones.
+- **Timed Questions:** 15-second countdown with auto-fail and ticking sound effects.
+- **Career Ladder:** Progression from "Applicant" to "CTO" with salary milestones.
 
-- ** Lifelines:**
+- **Lifelines:**
   - `rm -rf 50%` (Removes two wrong answers)
   - StackOverflow (Audience poll showing vote distribution)
   -  Phone a Friend (Personality-driven hints based on difficulty level)
-- ** Authentication:** Full sign-up/login flow with persistent high scores.
-- ** Leaderboard:** Global ranking of top developers.
-- ** Responsive:** Seamless experience from desktop to mobile.
+- **Authentication:** Full sign-up/login flow with persistent high scores.
+- **Leaderboard:** Global ranking of top developers.
+- **Responsive:** Seamless experience from desktop to mobile.
 
 ---
 
@@ -95,7 +95,9 @@ I built this to be a more fun way to consume knowldege a flashcards like project
 ---
 
 ##  Project Structure
+```text
 src/
+
 ├── app/          # Next.js App Router (Pages, API routes)
 
 ├── components/   # Reusable UI components (Ladder, Cards, Buttons)
@@ -107,6 +109,7 @@ src/
 ├── store/        # Zustand global state
 
 └── types/        # TypeScript interfaces
+```
 
 
 
