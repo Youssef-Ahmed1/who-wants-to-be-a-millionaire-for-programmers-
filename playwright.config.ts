@@ -23,10 +23,11 @@ export default defineConfig({
             name: "chromium",
             use: { ...devices["Desktop Chrome"] },
         },
-        {
-            name: "mobile",
-            use: { ...devices["iPhone 12"] }, // For mobile testing
-        },
+        // {
+        // commented due to not supported OS on main computer
+        // name: "mobile",
+        // use: { ...devices["iPhone 12"] }, // For mobile testing
+        // },
     ],
     webServer: {
         command: "npm run dev",

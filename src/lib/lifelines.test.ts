@@ -1,22 +1,27 @@
 import { generateStackOverflowVotes, generatePhoneFriendResponse } from './lifelines';
 import { Question } from '@/types';
 
-describe('generateStackOverflowVotes', () => {
-  it('should return an array of 4 numbers summing to 100', () => {
-    const question: Question = {
-      id: '1',
-      question: 'What is React?',
-      options: ['A', 'B', 'C', 'D'],
-      correctAnswer: 'A',
-      category: 'Frontend',
-      level: 1,
-    };
+describe("generateStackOverflowVotes", () => {
+    it("should handle level 0 gracefully", () => {
+        const response = generatePhoneFriendResponse(0);
+        expect(response).toBeDefined();
+        expect(response).toContain("{correctAnswer}");
+    });
 
-    const votes = generateStackOverflowVotes(question);
-
-    expect(votes).toHaveLength(4);
-    expect(votes.reduce((sum, v) => sum + v, 0)).toBe(100);
-  });
+    it("should handle questions with fewer than 4 options", () => {
+        const question: Question = {
+            id: "1",
+            question: "What is React?",
+            options: ["A", "B"],
+            correctAnswer: "A",
+            category: "Frontend",
+            level: 1,
+        };
+        const votes = generateStackOverflowVotes(question);
+        expect(votes).toHaveLength(4);
+        expect(votes.reduce((sum, v) => sum + v, 0)).toBe(100);
+    });
+});
 
   it('should give the correct answer the highest percentage', () => {
     const question: Question = {
@@ -33,7 +38,7 @@ describe('generateStackOverflowVotes', () => {
     const maxVote = Math.max(...votes);
     expect(votes[correctIndex]).toBe(maxVote);
   });
-});
+
 
 describe('generatePhoneFriendResponse', () => {
   it('should return a string containing {correctAnswer}', () => {

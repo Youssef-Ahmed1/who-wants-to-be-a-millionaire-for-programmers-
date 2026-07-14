@@ -21,10 +21,14 @@ test.beforeEach(async ({ page }) => {
 });
 
   test('50/50 hides two wrong options', async ({ page }) => {
-    const options = await page.locator('button.grid button').allTextContents();
-    await page.click('button:has-text("rm -rf 50%")');
-const visibleOptions = await page.locator('div.grid > button').allTextContents();
-expect(visibleOptions.length).toBe(options.length - 2);
+ const answerButtons = page.locator("div.grid > button");
+ await expect(answerButtons).toHaveCount(4);
+ const options = await page
+     .locator('[data-testid^="option-"]')
+     .allTextContents();
+ await page.click('button:has-text("rm -rf 50%")');
+
+  await expect(answerButtons).toHaveCount(2);
   });
 
   test('Phone a Friend shows modal with message', async ({ page }) => {
