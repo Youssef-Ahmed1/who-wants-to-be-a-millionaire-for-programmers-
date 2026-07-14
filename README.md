@@ -11,7 +11,7 @@
 
 ##  The Challenges
 
-[ I built this to be a more fun way to consume knowldege a flashcards like project, Instead of boring flashcards you face a 15-second timer and a career ladder that tracks your progression from 'Applicant' to 'CTO' so you feel something at stake.]
+I built this to be a more fun way to consume knowldege a flashcards like project, Instead of boring flashcards you face a 15-second timer and a career ladder that tracks your progression from 'Applicant' to 'CTO' so you feel something at stake.
 
 ---
 
