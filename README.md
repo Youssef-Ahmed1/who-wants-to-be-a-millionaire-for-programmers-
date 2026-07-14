@@ -2,7 +2,7 @@
 #  Who Wants To Be A Developer?
 
 
-[ A high-stakes like fun game where you have fun know more about programming game with timed technical interview simulator where every wrong answer costs you the job.]
+ A high-stakes like fun game where you have fun know more about programming game with timed technical interview simulator where every wrong answer costs you the job.
 
 
 **Live Demo:** https://who-wants-to-be-a-millionaire-for-p.vercel.app
