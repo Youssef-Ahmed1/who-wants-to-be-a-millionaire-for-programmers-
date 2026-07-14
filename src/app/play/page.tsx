@@ -9,6 +9,8 @@ import { useGameStore } from "../../../store";
 import { Question } from "@/types";
 import ProgressLadder from "@/components/ProgressLadder";
 import { playCorrect, playWrong, playTick, stopTick } from "@/lib/sound";
+
+import { motion, AnimatePresence } from "framer-motion";
 export default function GameBoard() {
     const router = useRouter();
     const { incrementScore, selectedCategory } = useGameStore();
@@ -162,13 +164,14 @@ stopTick();
         // 3. The 1.5 Second Pause
         setTimeout(() => {
             if (correct) {
+                playCorrect();
+
                 incrementScore();
-    playCorrect();
-                // Did we beat the game?
+                // check if the game is done
                 if (currentQuestionIndex + 1 >= questions.length) {
                     router.push("/game-over");
                 } else {
-                    // Next question! Reset the board.
+                    // Next question Reset the board.
                     setCurrentQuestionIndex(currentQuestionIndex + 1);
                     setSelectedAnswer(null);
                     setIsCorrect(null);
@@ -199,10 +202,13 @@ stopTick();
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
             <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 items-start">
                 {/* LADDER (top on mobile, side on desktop) */}
-                <ProgressLadder
-                    currentIndex={currentQuestionIndex}
-                    totalQuestions={questions.length}
-                />
+              <AnimatePresence mode="wait">
+    <ProgressLadder
+        key={currentQuestionIndex}
+        currentIndex={currentQuestionIndex}
+        totalQuestions={questions.length}
+    />
+</AnimatePresence>
 
                 <div className="w-full max-w-2xl bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-2xl">
                     {/* THE HUD */}
@@ -264,21 +270,41 @@ stopTick();
                             }
 
                             return (
-                                <button
+                                <motion.button
                                     key={index}
                                     onClick={() => handleAnswerClick(option)}
                                     disabled={selectedAnswer !== null}
-                                    className={`w-full h-auto min-h-[80px] whitespace-normal py-4 px-6 rounded-xl font-bold text-white transition-all duration-300 transform ${btnColor}`}
+                                    initial={{ scale: 1 }}
+                                    animate={{
+                                        scale:
+                                            selectedAnswer === option
+                                                ? 1.05
+                                                : 1,
+                                        borderColor:
+                                            selectedAnswer === option
+                                                ? isCorrect
+                                                    ? "#10b981"
+                                                    : "#ef4444"
+                                                : "#3b82f6",
+                                    }}
+                                    transition={{ duration: 0.2 }}
+                                    className={`w-full h-auto min-h-[80px] whitespace-normal py-4 px-6 rounded-xl font-bold text-white transition-colors duration-300 ${btnColor}`}
                                 >
                                     {option}
-                                </button>
+                                </motion.button>
                             );
                         })}
                     </div>
                 </div>
                 {/* STACKOVERFLOW MODAL */}
                 {showAudienceModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+                    >
                         <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
                             <h2 className="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-2">
                                 StackOverflow Says...
@@ -319,11 +345,18 @@ stopTick();
                                 Close Window
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 )}
-                {/* / 5. call a friend  Modal  */}
+                {/* / call a friend  Modal  */}
                 {showPhoneModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+                    >
+                        {" "}
                         <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
                             <h2 className="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
                                 🧙‍♂️ Your Senior Dev Friend Says...
@@ -340,7 +373,7 @@ stopTick();
                                 Close
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </main>
