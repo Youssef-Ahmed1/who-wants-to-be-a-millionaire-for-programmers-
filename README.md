@@ -97,10 +97,15 @@ I built this to be a more fun way to consume knowldege a flashcards like project
 ##  Project Structure
 src/
 ├── app/          # Next.js App Router (Pages, API routes)
+
 ├── components/   # Reusable UI components (Ladder, Cards, Buttons)
+
 ├── lib/          # Pure logic (Lifelines, Scoring, DB connection)
+
 ├── models/       # MongoDB schemas (User, Question)
+
 ├── store/        # Zustand global state
+
 └── types/        # TypeScript interfaces
 
 
