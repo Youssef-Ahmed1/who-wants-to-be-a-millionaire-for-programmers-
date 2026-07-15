@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/card";
 import CategoryButtons from "../components/ui/CategoryButtons";
 import Link from "next/link";
+import AuthButtons from "@/components/ui/AuthButtons";
+
 export default async function Home() {
     const session = await auth();
 
@@ -27,6 +29,7 @@ export default async function Home() {
                         Prove your stack. Win the remote job.
                     </p>
                 )}
+                <AuthButtons session={session} />
             </div>
 
             <Card className="w-full max-w-md bg-slate-900 border-slate-800">
