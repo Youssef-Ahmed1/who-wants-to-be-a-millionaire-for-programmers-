@@ -1,7 +1,9 @@
 
+
+
 <div align="center">
 
-# Who Wants To Be A Developer?
+#  Who Wants To Be A Developer?
 
 ### *The High-Stakes Technical Interview Simulator*
 
@@ -18,7 +20,7 @@
 
 ---
 
-## The Challenge
+##  The Challenge
 
 **What if your technical interview was a game?**
 
@@ -30,18 +32,18 @@ Most developers prepare for interviews with flashcards and LeetCode. Boring. Pas
 
 ---
 
-## Key Features
+##  Key Features
 
 | Feature | Description |
 |---------|-------------|
 |  **15-Second Timer** | Auto-fail if you don't answer in time. Tick sound intensifies in the final 5 seconds. |
-| **Career Ladder** | Progress from "Applicant" → "Bootcamp Grad" → "Intern" → "Junior Engineer" → "Engineer" → "Senior Engineer" → "Lead" → "Staff" → "Principal" → **"CTO"** with salary milestones ($100 → $1,000,000). |
-| **Three Lifelines** | • **50/50** – Removes two wrong answers (aka `rm -rf 50%`). <br> • **StackOverflow** – Audience poll showing vote distribution. <br> • **Phone a Friend** – Personality-driven hints that mock you on easy questions and respect you on hard ones. |
-| **Authentication** | Full sign-up/login flow with NextAuth.js. Save your high score to the global leaderboard. |
-| **Global Leaderboard** | See where you rank among other developers. |
-| **Responsive** | Full career ladder on desktop; compact card + progress bar on mobile. |
-| **Sound Effects** | Correct, wrong, and ticking sounds for immersive feedback. |
-| **Tested** | Unit tests (Jest) and E2E tests (Playwright) ensure reliability. |
+|  **Career Ladder** | Progress from "Applicant" → "Bootcamp Grad" → "Intern" → "Junior Engineer" → "Engineer" → "Senior Engineer" → "Lead" → "Staff" → "Principal" → **"CTO"** with salary milestones ($100 → $1,000,000). |
+|  **Three Lifelines** | • **50/50** – Removes two wrong answers (aka `rm -rf 50%`). <br> • **StackOverflow** – Audience poll showing vote distribution. <br> • **Phone a Friend** – Personality-driven hints that mock you on easy questions and respect you on hard ones. |
+|  **Authentication** | Full sign-up/login flow with NextAuth.js. Save your high score to the global leaderboard. |
+|  **Global Leaderboard** | See where you rank among other developers. |
+|  **Responsive** | Full career ladder on desktop; compact card + progress bar on mobile. |
+|  **Sound Effects** | Correct, wrong, and ticking sounds for immersive feedback. |
+|  **Tested** | Unit tests (Jest) and E2E tests (Playwright) ensure reliability. |
 
 ---
 
@@ -65,7 +67,7 @@ Most developers prepare for interviews with flashcards and LeetCode. Boring. Pas
 
 ---
 
-##  Screenshots
+## Screenshots
 
 <div align="center">
   <img src="public/images/image_for_who_wants_to_be_a_millionaire.png" width="600" alt="Gameplay Screenshot 1" />
