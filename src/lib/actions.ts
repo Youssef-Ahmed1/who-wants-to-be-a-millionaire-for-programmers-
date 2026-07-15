@@ -3,35 +3,62 @@
 
 import { connectToDatabase } from "./mongodb";
 import { Question } from "../models/Question";
-import { mockQuestions } from "../data/mockQuestions";
+//import { mockQuestions } from "../data/mockQuestions";
 import { signIn } from "@/auth";
 import bcrypt from "bcryptjs";
 import { User } from "../models/user";
 import { auth } from "../auth";
-export async function seedDatabase() {
-    try {
-        await connectToDatabase();
 
-        await Question.deleteMany({});
-        await User.deleteMany({});
+// export async function seedDatabase() {
+//     try {
+//         await connectToDatabase();
 
-        const hashedPassword = await bcrypt.hash("smileyCat123", 10);
+//         console.log(
+//             `📦 Attempting to seed ${mockQuestions.length} questions...`,
+//         );
 
-        await User.create({
-            name: "Senior Engineer",
-            email: "test@test.com",
-            password: hashedPassword,
-            highScore: 0,
-        });
-        await Question.insertMany(mockQuestions);
+//         await Question.deleteMany({});
+//         await User.deleteMany({});
 
-        console.log(" DATABASE AND USERS SUCCESSFULLY SEEDED!");
-        return { success: true };
-    } catch (error) {
-        console.error("Seeding Error:", error);
-                return { error: "Failed to seed database" };
-    }
-}
+//         const hashedPassword = await bcrypt.hash("smileyCat123", 10);
+
+//         await User.create({
+//             name: "Senior Engineer",
+//             email: "test@test.com",
+//             password: hashedPassword,
+//             highScore: 0,
+//         });
+
+//         // ✅ Insert with ordered: false to skip errors and insert all valid documents
+//         try {
+//             const result = await Question.insertMany(mockQuestions, {
+//                 ordered: false,
+//             });
+//             console.log(`✅ Inserted ${result.length} questions successfully`);
+//         } catch (error: any) {
+//             // If some documents fail, log the errors but continue
+//             if (error.writeErrors) {
+//                 console.log(
+//                     `⚠️ Inserted ${error.insertedDocs?.length || 0} questions`,
+//                 );
+//                 console.log(
+//                     `❌ ${error.writeErrors.length} documents failed to insert:`,
+//                 );
+//                 error.writeErrors.forEach((e: any) => {
+//                     console.log(`   - ${e.errmsg}`);
+//                 });
+//             } else {
+//                 throw error;
+//             }
+//         }
+
+//         console.log("✅ DATABASE AND USERS SUCCESSFULLY SEEDED!");
+//         return { success: true };
+//     } catch (error) {
+//         console.error("Seeding Error:", error);
+//         return { error: "Failed to seed database" };
+//     }
+// }
 export async function saveHighScore(newScore: number) {
     await connectToDatabase();
     const session = await auth();
@@ -53,19 +80,19 @@ export async function saveHighScore(newScore: number) {
 }
 
 
-export async function authenticate(prevState: any, formData: FormData) {
+export async function authenticate(
+    prevState: string | undefined,
+    formData: FormData,
+) {
     try {
         const formValues = Object.fromEntries(formData);
+
+        console.log("LOGIN ATTEMPT WITH:", formValues);
+
         await signIn("credentials", { ...formValues, redirectTo: "/" });
-        return { error: null };
     } catch (error) {
-        if (
-            error &&
-            typeof error === "object" &&
-            "type" in error &&
-            error.type === "CredentialsSignin"
-        ) {
-            return { error: "Invalid credentials." };
+        if ((error as any).type === "CredentialsSignin") {
+            return "Invalid credentials.";
         }
         throw error;
     }
@@ -73,16 +100,27 @@ export async function authenticate(prevState: any, formData: FormData) {
 export async function getRandomQuestions(category: string) {
     try {
         await connectToDatabase();
-        const randomQuestions = await Question.aggregate([
-            { $match: { category: category } },
-            { $sample: { size: 5 } },
+
+        const [easy, medium, hard] = await Promise.all([
+            Question.aggregate([
+                { $match: { category: category, level: 1 } },
+                { $sample: { size: 2 } },
+            ]),
+            Question.aggregate([
+                { $match: { category: category, level: 2 } },
+                { $sample: { size: 2 } },
+            ]),
+            Question.aggregate([
+                { $match: { category: category, level: 3 } },
+                { $sample: { size: 1 } },
+            ]),
         ]);
 
-        return JSON.parse(JSON.stringify(randomQuestions));
+        const questions = [...easy, ...medium, ...hard];
+        return JSON.parse(JSON.stringify(questions));
     } catch (error) {
         console.error("Database Error:", error);
-                return { error: "Failed to fetch questions" };
-
+        return { error: "Failed to fetch questions" };
     }
 }
 

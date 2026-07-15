@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function GameBoard() {
     const router = useRouter();
     const { incrementScore, selectedCategory } = useGameStore();
-
+const [showCorrectAnswer, setShowCorrectAnswer] = useState<string | null>(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -78,7 +78,7 @@ export default function GameBoard() {
 
     useEffect(() => {
 stopTick();
-        setTimeLeft(15);
+        setTimeLeft(30);
         setIsTimerActive(true);
     }, [currentQuestionIndex]);
     const handleTimeout = () => {
@@ -153,36 +153,34 @@ stopTick();
         setUsedFiftyFifty(true);
     };
     const handleAnswerClick = (option: string) => {
-        // 1. Lock the board immediately
-    if (selectedAnswer !== null) return;
-    stopTick();
-        // 2. Do the math & update UI state
+        if (selectedAnswer !== null) return;
+
         const correct = option === currentQuestion.correctAnswer;
         setIsCorrect(correct);
         setSelectedAnswer(option);
 
-        // 3. The 1.5 Second Pause
+        // ✅ If wrong, store the correct answer to highlight it
+        if (!correct) {
+            setShowCorrectAnswer(currentQuestion.correctAnswer);
+        }
+
         setTimeout(() => {
             if (correct) {
-                playCorrect();
-
                 incrementScore();
-                // check if the game is done
                 if (currentQuestionIndex + 1 >= questions.length) {
                     router.push("/game-over");
                 } else {
-                    // Next question Reset the board.
                     setCurrentQuestionIndex(currentQuestionIndex + 1);
                     setSelectedAnswer(null);
                     setIsCorrect(null);
+                    setShowCorrectAnswer(null); // ✅ Reset on next question
                 }
             } else {
-                playWrong();
                 router.push("/game-over");
             }
             setHiddenOptions([]);
         }, 1500);
-    };
+    };;
 
     const handlePhoneFriend = () => {
         if (usedPhoneFriend) return;
@@ -202,13 +200,13 @@ stopTick();
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
             <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 items-start">
                 {/* LADDER (top on mobile, side on desktop) */}
-              <AnimatePresence mode="wait">
-    <ProgressLadder
-        key={currentQuestionIndex}
-        currentIndex={currentQuestionIndex}
-        totalQuestions={questions.length}
-    />
-</AnimatePresence>
+                <AnimatePresence mode="wait">
+                    <ProgressLadder
+                        key={currentQuestionIndex}
+                        currentIndex={currentQuestionIndex}
+                        totalQuestions={questions.length}
+                    />
+                </AnimatePresence>
 
                 <div className="w-full max-w-2xl bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-2xl">
                     {/* THE HUD */}
@@ -254,14 +252,23 @@ stopTick();
                                     ></div>
                                 );
                             }
+
                             let btnColor =
                                 "bg-blue-600 hover:bg-blue-500 border border-blue-500";
 
                             if (selectedAnswer !== null) {
                                 if (option === selectedAnswer) {
+                                    // The user's selected answer
                                     btnColor = isCorrect
                                         ? "bg-emerald-600 scale-105 shadow-xl z-10 border-2 border-emerald-400"
                                         : "bg-red-600 scale-105 shadow-xl z-10 border-2 border-red-400";
+                                } else if (
+                                    option === showCorrectAnswer &&
+                                    !isCorrect
+                                ) {
+                                    // ✅ The correct answer (shown only when user got it wrong)
+                                    btnColor =
+                                        "bg-emerald-600 border-2 border-emerald-400 animate-pulse";
                                 } else {
                                     // Dim the buttons that weren't clicked
                                     btnColor =
