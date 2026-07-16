@@ -229,13 +229,13 @@ stopTick();
                            </button>
                            <button
                                onClick={handleAskAudience}
-                               className="bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm md:text-base transition-colors"
+                               className="bg-[#009efa] hover:bg-blue-600 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm md:text-base transition-colors"
                            >
                                Ask StackOverflow
                            </button>
                            <button
                                onClick={handlePhoneFriend}
-                               className="bg-purple-500 hover:bg-purple-400 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm md:text-base transition-colors"
+                               className="bg-[#845ec2] hover:bg-[#9b89b3] text-slate-900 font-bold py-2 px-4 rounded-lg text-sm md:text-base transition-colors"
                            >
                                📱 Phone a Friend
                            </button>

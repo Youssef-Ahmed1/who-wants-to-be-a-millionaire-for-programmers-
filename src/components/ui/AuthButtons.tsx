@@ -30,8 +30,8 @@ export default function AuthButtons({ session }: AuthButtonsProps) {
             ) : (
                 <Button
                     onClick={() => signOut()}
-                    variant="outline"
-                    className="border-slate-600 text-slate-300 hover:bg-slate-500 rounded-xl"
+                    variant="default"
+                    className="border-slate-600 bg-[#368eaa] text-slate-300 hover:bg-slate-500 rounded-xl"
                 >
                     Sign Out
                 </Button>

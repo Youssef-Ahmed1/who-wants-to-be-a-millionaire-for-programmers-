@@ -16,7 +16,10 @@ export default async function Home() {
     return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
             <div className="text-center mb-12">
-                <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-4">
+                <h1
+                    className="text-5xl font-extrabold text-transparent
+                 bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-4"
+                >
                     Who Wants To Be A DEV?
                 </h1>
 
