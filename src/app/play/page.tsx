@@ -197,205 +197,194 @@ stopTick();
         setUsedPhoneFriend(true);
     };
     //
-    return (
-        <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
-            <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 items-start">
-                <div
-                    className="w-70% max-w-xl bg-slate-900 p-8
-                rounded-xl border border-slate-800 shadow-2xl order-1 md:order-1
-relative left-75
-                "
-                >
-                    {/* LADDER (top on mobile, side on desktop) */}
-                    <AnimatePresence mode="wait">
-                        <ProgressLadder
-                            key={currentQuestionIndex}
-                            currentIndex={currentQuestionIndex}
-                            totalQuestions={questions.length}
-                        />
-                    </AnimatePresence>
-                </div>{" "}
-                <div
-                    className="w-30% max-w-4xl bg-slate-900 p-8 rounded-xl border
-                 border-slate-800 shadow-2xl relative top-50 left-15"
-                >
-                    {/* THE HUD */}
-                    <div className="   relative left-25 ">
-                        <button
-                            onClick={handleFiftyFifty}
-                            className="mb-6 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
-                        >
-                            rm -rf 50%
-                        </button>{" "}
-                        <button
-                            onClick={handleAskAudience}
-                            className="mb-6 bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
-                        >
-                            Ask StackOverflow
-                        </button>
-                        <button
-                            onClick={handlePhoneFriend}
-                            className="m-6 bg-purple-500 hover:bg-purple-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
-                        >
-                            📱 Phone a Friend
-                        </button>
-                    </div>
-                    <div className="flex justify-between text-slate-400 mb-4 text-sm font-bold uppercase tracking-wider">
-                        <span>Category: {currentQuestion.category}</span>
-                        <span
-                            className={`font-mono text-xl ${timeLeft <= 5 ? "text-red-500 animate-pulse" : "text-emerald-400"}`}
-                        >
-                            ⏱️ {timeLeft}s
-                        </span>
-                        <span>Level: {currentQuestion.level}</span>
-                    </div>
-                    {/* THE QUESTION */}
-                    <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 leading-relaxed">
-                        {currentQuestion.question}
-                    </h2>
+   return (
+       <main className="min-h-screen flex flex-col bg-slate-950 text-white">
+           {/* TOP BAR: Category, Timer, Level (full width) */}
+           <div className="w-full bg-slate-900/50 border-b border-slate-800 px-4 py-3 flex justify-between items-center">
+               <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+                   {currentQuestion.category}
+               </span>
+               <span
+                   className={`font-mono text-xl font-bold ${timeLeft <= 5 ? "text-red-500 animate-pulse" : "text-emerald-400"}`}
+               >
+                   ⏱️ {timeLeft}s
+               </span>
+               <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+                   Level {currentQuestion.level}
+               </span>
+           </div>
 
-                    {/* THE OPTIONS GRID */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {currentQuestion.options.map((option, index) => {
-                            if (hiddenOptions.includes(option)) {
-                                return (
-                                    <div
-                                        key={index}
-                                        className="invisible"
-                                    ></div>
-                                );
-                            }
+           {/* MAIN CONTENT: Ladder (right) + Game Board (center) */}
+           <div className="flex-1 flex flex-col md:flex-row relative left-15">
+               {/* GAME BOARD - centered, takes remaining space */}
+               <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+                   <div className="w-full max-w-4xl bg-slate-900/80 p-6 md:p-10 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-sm">
+                       {/* LIFELINES */}
+                       <div className="flex flex-wrap gap-3 mb-6 justify-center">
+                           <button
+                               onClick={handleFiftyFifty}
+                               className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm md:text-base transition-colors"
+                           >
+                               rm -rf 50%
+                           </button>
+                           <button
+                               onClick={handleAskAudience}
+                               className="bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm md:text-base transition-colors"
+                           >
+                               Ask StackOverflow
+                           </button>
+                           <button
+                               onClick={handlePhoneFriend}
+                               className="bg-purple-500 hover:bg-purple-400 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm md:text-base transition-colors"
+                           >
+                               📱 Phone a Friend
+                           </button>
+                       </div>
 
-                            let btnColor =
-                                "bg-blue-600 hover:bg-blue-500 border border-blue-500";
+                       {/* QUESTION */}
+                       <h2 className="text-xl md:text-3xl font-bold text-center mb-8 md:mb-10 leading-relaxed">
+                           {currentQuestion.question}
+                       </h2>
 
-                            if (selectedAnswer !== null) {
-                                if (option === selectedAnswer) {
-                                    // The user's selected answer
-                                    btnColor = isCorrect
-                                        ? "bg-emerald-600 scale-105 shadow-xl z-10 border-2 border-emerald-400"
-                                        : "bg-red-600 scale-105 shadow-xl z-10 border-2 border-red-400";
-                                } else if (
-                                    option === showCorrectAnswer &&
-                                    !isCorrect
-                                ) {
-                                    // ✅ The correct answer (shown only when user got it wrong)
-                                    btnColor =
-                                        "bg-emerald-600 border-2 border-emerald-400 animate-pulse";
-                                } else {
-                                    // Dim the buttons that weren't clicked
-                                    btnColor =
-                                        "bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed border border-slate-700";
-                                }
-                            }
+                       {/* OPTIONS GRID */}
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                           {currentQuestion.options.map((option, index) => {
+                               if (hiddenOptions.includes(option)) {
+                                   return (
+                                       <div key={index} className="invisible" />
+                                   );
+                               }
 
-                            return (
-                                <motion.button
-                                    key={index}
-                                    onClick={() => handleAnswerClick(option)}
-                                    disabled={selectedAnswer !== null}
-                                    initial={{ scale: 1 }}
-                                    animate={{
-                                        scale:
-                                            selectedAnswer === option
-                                                ? 1.05
-                                                : 1,
-                                        borderColor:
-                                            selectedAnswer === option
-                                                ? isCorrect
-                                                    ? "#10b981"
-                                                    : "#ef4444"
-                                                : "#3b82f6",
-                                    }}
-                                    transition={{ duration: 0.2 }}
-                                    className={`w-full h-auto min-h-[80px] whitespace-normal py-4 px-6 rounded-xl font-bold text-white transition-colors duration-300 ${btnColor}`}
-                                >
-                                    {option}
-                                </motion.button>
-                            );
-                        })}
-                    </div>
-                </div>
-                {/* STACKOVERFLOW MODAL */}
-                {showAudienceModal && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-                    >
-                        <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
-                            <h2 className="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-2">
-                                StackOverflow Says...
-                            </h2>
+                               let btnColor =
+                                   "bg-blue-600 hover:bg-blue-500 border border-blue-500";
 
-                            <div className="flex flex-col gap-6">
-                                {currentQuestion.options.map(
-                                    (option, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex flex-col gap-2"
-                                        >
-                                            <div className="flex justify-between text-sm text-slate-300">
-                                                <span className="truncate pr-4">
-                                                    {option}
-                                                </span>
-                                                <span className="font-bold text-white">
-                                                    {audienceVotes[index]}%
-                                                </span>
-                                            </div>
-                                            <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full bg-blue-500 transition-all duration-1000 ease-out"
-                                                    style={{
-                                                        width: `${audienceVotes[index]}%`,
-                                                    }}
-                                                ></div>
-                                            </div>
-                                        </div>
-                                    ),
-                                )}
-                            </div>
+                               if (selectedAnswer !== null) {
+                                   if (option === selectedAnswer) {
+                                       btnColor = isCorrect
+                                           ? "bg-emerald-600 scale-105 shadow-xl z-10 border-2 border-emerald-400"
+                                           : "bg-red-600 scale-105 shadow-xl z-10 border-2 border-red-400";
+                                   } else if (
+                                       option === showCorrectAnswer &&
+                                       !isCorrect
+                                   ) {
+                                       btnColor =
+                                           "bg-emerald-600 border-2 border-emerald-400 animate-pulse";
+                                   } else {
+                                       btnColor =
+                                           "bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed border border-slate-700";
+                                   }
+                               }
 
-                            <button
-                                onClick={() => setShowAudienceModal(false)}
-                                className="mt-8 w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
-                            >
-                                Close Window
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-                {/* / call a friend  Modal  */}
-                {showPhoneModal && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-                    >
-                        {" "}
-                        <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
-                            <h2 className="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
-                                🧙‍♂️ Your Senior Dev Friend Says...
-                            </h2>
-                            <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                                <p className="text-white text-lg leading-relaxed italic">
-                                    "{phoneFriendMessage}"
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => setShowPhoneModal(false)}
-                                className="mt-6 w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-            </div>
-        </main>
-    );
+                               return (
+                                   <motion.button
+                                       key={index}
+                                       onClick={() => handleAnswerClick(option)}
+                                       disabled={selectedAnswer !== null}
+                                       initial={{ scale: 1 }}
+                                       animate={{
+                                           scale:
+                                               selectedAnswer === option
+                                                   ? 1.05
+                                                   : 1,
+                                           borderColor:
+                                               selectedAnswer === option
+                                                   ? isCorrect
+                                                       ? "#10b981"
+                                                       : "#ef4444"
+                                                   : "#3b82f6",
+                                       }}
+                                       transition={{ duration: 0.2 }}
+                                       className={`w-full h-auto min-h-[70px] md:min-h-[80px] whitespace-normal py-3 md:py-4 px-4 md:px-6 rounded-xl font-bold text-white transition-colors duration-300 ${btnColor} text-sm md:text-base`}
+                                   >
+                                       {option}
+                                   </motion.button>
+                               );
+                           })}
+                       </div>
+                   </div>
+               </div>
+
+               {/* LADDER - pinned to right edge, full height */}
+               <div className="md:w-72 lg:w-80 xl:w-96 flex-shrink-0 bg-slate-900/50 border-l border-slate-800 p-4 overflow-y-auto">
+                   <ProgressLadder
+                       key={currentQuestionIndex}
+                       currentIndex={currentQuestionIndex}
+                       totalQuestions={questions.length}
+                   />
+               </div>
+           </div>
+
+           {/* MODALS (unchanged) */}
+           {showAudienceModal && (
+               <motion.div
+                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                   exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                   transition={{ duration: 0.3 }}
+                   className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+               >
+                   <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+                       <h2 className="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-2">
+                           StackOverflow Says...
+                       </h2>
+                       <div className="flex flex-col gap-6">
+                           {currentQuestion.options.map((option, index) => (
+                               <div key={index} className="flex flex-col gap-2">
+                                   <div className="flex justify-between text-sm text-slate-300">
+                                       <span className="truncate pr-4">
+                                           {option}
+                                       </span>
+                                       <span className="font-bold text-white">
+                                           {audienceVotes[index]}%
+                                       </span>
+                                   </div>
+                                   <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+                                       <div
+                                           className="h-full bg-blue-500 transition-all duration-1000 ease-out"
+                                           style={{
+                                               width: `${audienceVotes[index]}%`,
+                                           }}
+                                       />
+                                   </div>
+                               </div>
+                           ))}
+                       </div>
+                       <button
+                           onClick={() => setShowAudienceModal(false)}
+                           className="mt-8 w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
+                       >
+                           Close Window
+                       </button>
+                   </div>
+               </motion.div>
+           )}
+
+           {showPhoneModal && (
+               <motion.div
+                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                   exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                   transition={{ duration: 0.3 }}
+                   className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+               >
+                   <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+                       <h2 className="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+                           🧙‍♂️ Your Senior Dev Friend Says...
+                       </h2>
+                       <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                           <p className="text-white text-lg leading-relaxed italic">
+                               "{phoneFriendMessage}"
+                           </p>
+                       </div>
+                       <button
+                           onClick={() => setShowPhoneModal(false)}
+                           className="mt-6 w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition-colors"
+                       >
+                           Close
+                       </button>
+                   </div>
+               </motion.div>
+           )}
+       </main>
+   );
 }
