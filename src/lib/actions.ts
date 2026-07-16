@@ -79,22 +79,20 @@ export async function saveHighScore(newScore: number) {
     return { success: true, message: "Score did not beat high score." };
 }
 
-
 export async function authenticate(
-    prevState: string | undefined,
+    prevState: { error: string | null } | undefined,
     formData: FormData,
-) {
+): Promise<{ error: string | null }> {
     try {
         const formValues = Object.fromEntries(formData);
-
         console.log("LOGIN ATTEMPT WITH:", formValues);
-
         await signIn("credentials", { ...formValues, redirectTo: "/" });
+        return { error: null }; // Success
     } catch (error) {
         if ((error as any).type === "CredentialsSignin") {
-            return "Invalid credentials.";
+            return { error: "Invalid credentials." };
         }
-        throw error;
+        throw error; // Re-throw unexpected errors
     }
 }
 export async function getRandomQuestions(category: string) {
