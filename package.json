@@ -8,8 +8,7 @@
         "start": "next start",
         "lint": "eslint",
         "test": "jest",
-        "test:watch": "jest --watch",
-        "seed": "tsx --env-file=.env.local src/app/api/seed/route.ts"
+        "test:watch": "jest --watch"
     },
     "dependencies": {
         "@phosphor-icons/react": "^2.1.10",
