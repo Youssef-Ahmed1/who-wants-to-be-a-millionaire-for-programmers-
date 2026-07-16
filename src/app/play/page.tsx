@@ -200,18 +200,47 @@ stopTick();
     return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
             <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 items-start">
-                {/* LADDER (top on mobile, side on desktop) */}
-                <AnimatePresence mode="wait">
-                    <ProgressLadder
-                        key={currentQuestionIndex}
-                        currentIndex={currentQuestionIndex}
-                        totalQuestions={questions.length}
-                    />
-                </AnimatePresence>
-
-                <div className="w-full max-w-2xl bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-2xl">
+                <div
+                    className="w-70% max-w-xl bg-slate-900 p-8
+                rounded-xl border border-slate-800 shadow-2xl order-1 md:order-1
+relative left-75
+                "
+                >
+                    {/* LADDER (top on mobile, side on desktop) */}
+                    <AnimatePresence mode="wait">
+                        <ProgressLadder
+                            key={currentQuestionIndex}
+                            currentIndex={currentQuestionIndex}
+                            totalQuestions={questions.length}
+                        />
+                    </AnimatePresence>
+                </div>{" "}
+                <div
+                    className="w-30% max-w-4xl bg-slate-900 p-8 rounded-xl border
+                 border-slate-800 shadow-2xl relative top-50 left-15"
+                >
                     {/* THE HUD */}
-                    <div className="flex justify-between text-slate-400 mb-6 text-sm font-bold uppercase tracking-wider">
+                    <div className="   relative left-25 ">
+                        <button
+                            onClick={handleFiftyFifty}
+                            className="mb-6 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
+                        >
+                            rm -rf 50%
+                        </button>{" "}
+                        <button
+                            onClick={handleAskAudience}
+                            className="mb-6 bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
+                        >
+                            Ask StackOverflow
+                        </button>
+                        <button
+                            onClick={handlePhoneFriend}
+                            className="m-6 bg-purple-500 hover:bg-purple-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
+                        >
+                            📱 Phone a Friend
+                        </button>
+                    </div>
+                    <div className="flex justify-between text-slate-400 mb-4 text-sm font-bold uppercase tracking-wider">
                         <span>Category: {currentQuestion.category}</span>
                         <span
                             className={`font-mono text-xl ${timeLeft <= 5 ? "text-red-500 animate-pulse" : "text-emerald-400"}`}
@@ -224,24 +253,7 @@ stopTick();
                     <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 leading-relaxed">
                         {currentQuestion.question}
                     </h2>
-                    <button
-                        onClick={handleFiftyFifty}
-                        className="mb-6 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
-                    >
-                        rm -rf 50%
-                    </button>{" "}
-                    <button
-                        onClick={handleAskAudience}
-                        className="mb-6 bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
-                    >
-                        Ask StackOverflow
-                    </button>
-                    <button
-                        onClick={handlePhoneFriend}
-                        className="mb-6 bg-purple-500 hover:bg-purple-400 text-slate-900 font-bold py-2 px-4 rounded-lg"
-                    >
-                        📱 Phone a Friend
-                    </button>
+
                     {/* THE OPTIONS GRID */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {currentQuestion.options.map((option, index) => {
