@@ -80,6 +80,7 @@ const [showCorrectAnswer, setShowCorrectAnswer] = useState<string | null>(null);
 stopTick();
         setTimeLeft(30);
         setIsTimerActive(true);
+         setShowCorrectAnswer(null);
     }, [currentQuestionIndex]);
     const handleTimeout = () => {
   if (selectedAnswer !== null) return;
