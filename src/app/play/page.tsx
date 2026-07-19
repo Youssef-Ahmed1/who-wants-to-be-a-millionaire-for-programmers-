@@ -3,18 +3,20 @@ import {
     generateStackOverflowVotes,
     generatePhoneFriendResponse,
 } from "../../lib/lifelines";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; // ✅ import useRef
 import { useRouter } from "next/navigation";
 import { useGameStore } from "../../../store";
 import { Question } from "@/types";
-import ProgressLadder from "@/components/ProgressLadder";
+import ProgressLadder from "@/components/ui/ProgressLadder";
 import { playCorrect, playWrong, playTick, stopTick } from "@/lib/sound";
-
 import { motion, AnimatePresence } from "framer-motion";
+
 export default function GameBoard() {
     const router = useRouter();
     const { incrementScore, selectedCategory } = useGameStore();
-const [showCorrectAnswer, setShowCorrectAnswer] = useState<string | null>(null);
+    const [showCorrectAnswer, setShowCorrectAnswer] = useState<string | null>(
+        null,
+    );
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -32,6 +34,10 @@ const [showCorrectAnswer, setShowCorrectAnswer] = useState<string | null>(null);
     const [showPhoneModal, setShowPhoneModal] = useState(false);
     const [timeLeft, setTimeLeft] = useState(25);
     const [isTimerActive, setIsTimerActive] = useState(true);
+
+    // ✅ Ref to prevent duplicate fetches
+    const hasFetched = useRef(false);
+
     useEffect(() => {
         const loadQuestions = async () => {
             if (!selectedCategory) {
@@ -39,22 +45,26 @@ const [showCorrectAnswer, setShowCorrectAnswer] = useState<string | null>(null);
                 return;
             }
 
+            // ✅ If we already fetched, skip
+            if (hasFetched.current) return;
+            hasFetched.current = true;
+
             try {
                 const url = `/api/questions?category=${encodeURIComponent(selectedCategory)}`;
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`);
                 }
-
                 const result = await response.json();
                 setQuestions(result);
                 setIsLoading(false);
-
                 console.log(result);
             } catch (error: any) {
                 console.error(error.message);
+                // Reset flag so user can retry if needed
+                hasFetched.current = false;
             }
-        };
+        };;
 
         loadQuestions();
     }, []);
