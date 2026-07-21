@@ -8,7 +8,7 @@ interface ProgressLadderProps {
 }
 
 export default function ProgressLadder({ currentIndex, totalQuestions }: ProgressLadderProps) {
-  const stepsToShow = ladderSteps.slice(-totalQuestions);
+const stepsToShow = ladderSteps.slice(-(totalQuestions || 15));
   const currentStep = stepsToShow[currentIndex] || stepsToShow[0];
   const currentStepNumber = currentIndex + 1;
 

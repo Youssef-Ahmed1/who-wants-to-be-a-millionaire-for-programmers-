@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { saveHighScore } from "../../lib/actions";
 import { useState } from "react";
-
+import { ladderSteps } from "@/lib/ladderData";
 // Career mapping based on score
 const careerMessages = [
     {
@@ -71,7 +71,10 @@ export default function GameOver() {
         resetGame();
         router.push("/");
     };
-
+   const getSalary = (score: number) => {
+       const stepIndex = Math.min(score, ladderSteps.length - 1);
+       return ladderSteps[stepIndex]?.salary || "$0";
+   };
     const handleSaveScoreClick = async () => {
         setIsSaving(true);
         try {
@@ -102,7 +105,7 @@ export default function GameOver() {
             {/* SCORE DISPLAY */}
             <div className="text-center mb-6">
                 <p className="text-3xl text-emerald-400 font-bold">
-                    You earned: {formattedScore}
+                    You earned: {getSalary(score)}{" "}
                 </p>
             </div>
 

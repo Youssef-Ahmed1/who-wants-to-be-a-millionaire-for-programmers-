@@ -56,6 +56,7 @@ export default function GameBoard() {
                     throw new Error(`Response status: ${response.status}`);
                 }
                 const result = await response.json();
+
                 setQuestions(result);
                 setIsLoading(false);
                 console.log(result);

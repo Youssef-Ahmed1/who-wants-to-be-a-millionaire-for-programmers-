@@ -95,33 +95,6 @@ export async function authenticate(
         throw error; // Re-throw unexpected errors
     }
 }
-export async function getRandomQuestions(category: string) {
-    try {
-        await connectToDatabase();
-
-        const [easy, medium, hard] = await Promise.all([
-            Question.aggregate([
-                { $match: { category: category, level: 1 } },
-                { $sample: { size: 2 } },
-            ]),
-            Question.aggregate([
-                { $match: { category: category, level: 2 } },
-                { $sample: { size: 2 } },
-            ]),
-            Question.aggregate([
-                { $match: { category: category, level: 3 } },
-                { $sample: { size: 1 } },
-            ]),
-        ]);
-
-        const questions = [...easy, ...medium, ...hard];
-        return JSON.parse(JSON.stringify(questions));
-    } catch (error) {
-        console.error("Database Error:", error);
-        return { error: "Failed to fetch questions" };
-    }
-}
-
 export async function registerUser(formData: FormData) {
     try {
         const name = formData.get("name") as string;

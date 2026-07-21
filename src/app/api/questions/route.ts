@@ -25,24 +25,50 @@ export async function GET(request: NextRequest) {
     try {
         await connectToDatabase();
 
-        // Fetch questions from the database
-        const [easy, medium, hard] = await Promise.all([
+        // ✅ Fetch as many as possible, with fallback
+        let [easy, medium, hard] = await Promise.all([
             Question.aggregate([
                 { $match: { category: category, level: 1 } },
-                { $sample: { size: 8 } },
+                { $sample: { size: 5 } },
             ]),
             Question.aggregate([
                 { $match: { category: category, level: 2 } },
-                { $sample: { size: 6 } },
+                { $sample: { size: 5 } },
             ]),
             Question.aggregate([
                 { $match: { category: category, level: 3 } },
-                { $sample: { size: 4 } },
+                { $sample: { size: 5 } },
             ]),
         ]);
 
-        const questions = [...easy, ...medium, ...hard];
+        // ✅ Convert MongoDB cursors to arrays
+        easy = easy || [];
+        medium = medium || [];
+        hard = hard || [];
 
+        // ✅ Combine and sort by level
+        let questions = [...easy, ...medium, ...hard].sort(
+            (a, b) => a.level - b.level,
+        );
+
+        // ✅ If we have fewer than 15 questions, duplicate some to fill the gap
+        if (questions.length < 15 && questions.length > 0) {
+            const total = questions.length;
+            while (questions.length < 15) {
+                const randomIndex = Math.floor(Math.random() * total);
+                questions.push({ ...questions[randomIndex], _id: undefined });
+            }
+        }
+
+        // ✅ If STILL no questions, return a fallback
+        if (questions.length === 0) {
+            return Response.json(
+                { error: "No questions available for this category" },
+                { status: 404 },
+            );
+        }
+
+        // ✅ Shuffle options
         const shuffledQuestions = questions.map((q) => ({
             ...q,
             options: shuffleArray(q.options),
