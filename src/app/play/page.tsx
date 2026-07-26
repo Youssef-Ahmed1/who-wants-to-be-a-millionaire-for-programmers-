@@ -15,10 +15,10 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function GameBoard() {
     const router = useRouter();
     const { incrementScore, selectedCategory } = useGameStore();
-
     const [showCorrectAnswer, setShowCorrectAnswer] = useState<string | null>(
         null,
     );
+
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -26,23 +26,17 @@ export default function GameBoard() {
     const [hiddenOptions, setHiddenOptions] = useState<string[]>([]);
     const [usedFiftyFifty, setUsedFiftyFifty] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-
     const [showAudienceModal, setShowAudienceModal] = useState(false);
     const [audienceVotes, setAudienceVotes] = useState<number[]>([]);
     const [usedAudience, setUsedAudience] = useState(false);
-
     const [usedPhoneFriend, setUsedPhoneFriend] = useState(false);
     const [phoneFriendMessage, setPhoneFriendMessage] = useState<string | null>(
         null,
     );
     const [showPhoneModal, setShowPhoneModal] = useState(false);
-
     const [timeLeft, setTimeLeft] = useState(30); // ✅ Fix: Match default 30s
     const [isTimerActive, setIsTimerActive] = useState(true);
-
     const hasFetched = useRef(false);
-
-    // ✅ Ref to keep track of current selected answer without stale closures
     const selectedAnswerRef = useRef(selectedAnswer);
     useEffect(() => {
         selectedAnswerRef.current = selectedAnswer;
@@ -91,7 +85,7 @@ export default function GameBoard() {
         }, 1500);
     }, [router]);
 
-    // ✅ Fix: Clean Timer logic without side-effects inside state updater
+
     useEffect(() => {
         if (selectedAnswer !== null || !isTimerActive) return;
 
@@ -156,34 +150,39 @@ export default function GameBoard() {
         setUsedAudience(true);
     };
 
-    const handleFiftyFifty = () => {
-        if (usedFiftyFifty) return;
-        setIsTimerActive(false);
 
-        // ✅ Case-insensitive comparison fix
-        const wrongOptions = currentQuestion.options.filter(
-            (option: string) =>
-                option.toLowerCase().trim() !==
-                currentQuestion.correctAnswer.toLowerCase().trim(),
-        );
+{
+    /*
+a function that handles the lifeline
+rm -rf 50% it's purpose is to eliminate
+two wrong choices of the 4 available
+choices randomly it has a clause when it's pressed
+to stop the timer till the choices are eliminated
 
-        const shuffledWrongOptions = wrongOptions.sort(
-            () => Math.random() - 0.5,
-        );
-        const optionsToHide = [
-            shuffledWrongOptions[0],
-            shuffledWrongOptions[1],
-        ];
+ */
+}
+ const handleFiftyFifty = () => {
+     if (usedFiftyFifty) return;
+     setIsTimerActive(false);
 
-        setHiddenOptions(optionsToHide);
-        setUsedFiftyFifty(true);
+     const wrongOptions = currentQuestion.options.filter(
+         (option: string) =>
+             option.toLowerCase().trim() !==
+             currentQuestion.correctAnswer.toLowerCase().trim(),
+     );
 
-        setTimeout(() => {
-            if (selectedAnswerRef.current === null) {
-                setIsTimerActive(true);
-            }
-        }, 2000);
-    };
+     const shuffledWrongOptions = wrongOptions.sort(() => Math.random() - 0.5);
+     const optionsToHide = [shuffledWrongOptions[0], shuffledWrongOptions[1]];
+
+     setHiddenOptions(optionsToHide);
+     setUsedFiftyFifty(true);
+
+     setTimeout(() => {
+         if (selectedAnswerRef.current === null) {
+             setIsTimerActive(true);
+         }
+     }, 2000);
+ };
 
     const handleAnswerClick = (option: string) => {
         if (selectedAnswer !== null) return;
@@ -361,7 +360,7 @@ export default function GameBoard() {
                 </div>
 
                 {/* LADDER */}
-                <div className="md:w-72 lg:w-80 xl:w-96 flex-shrink-0 bg-slate-900/50 border-l border-slate-800 p-4 overflow-y-auto">
+                <div className="md:w-35 lg:w-43 xl:w-55 flex-shrink-0 bg-slate-900/50 border-l border-slate-800 p-4 overflow-y-auto">
                     <ProgressLadder
                         key={currentQuestionIndex}
                         currentIndex={currentQuestionIndex}
@@ -451,4 +450,4 @@ export default function GameBoard() {
         </main>
     );
 }
-//
+
