@@ -247,7 +247,7 @@ to stop the timer till the choices are eliminated
 
     return (
         <main className="min-h-screen flex flex-col bg-slate-950 text-white">
-            {/* TOP BAR */}
+            {/* 1. TOP BAR */}
             <div className="w-full bg-slate-900/50 border-b border-slate-800 px-4 py-3 flex justify-between items-center">
                 <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
                     {currentQuestion.category}
@@ -264,8 +264,15 @@ to stop the timer till the choices are eliminated
 
             {/* MAIN CONTENT - ✅ Fix: Removed broken 'relative left-15' class */}
             <div className="flex-1 flex flex-col md:flex-row">
-                <div className="flex-1 flex items-center justify-center p-4 md:p-8">
-                    <div className="w-full max-w-4xl bg-slate-900/80 p-6 md:p-10 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-sm">
+                <div className="flex-1 flex items-center justify-center p-3 md:p-8">
+                    <div className="w-full max-w-4xl bg-slate-900/80 p-4 md:p-10 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-sm">
+                        <div className="md:hidden">
+                            <ProgressLadder
+                                key={`mobile-${currentQuestionIndex}`}
+                                currentIndex={currentQuestionIndex}
+                                totalQuestions={questions.length}
+                            />
+                        </div>
                         {/* LIFELINES */}
                         <div className="flex flex-wrap gap-3 mb-6 justify-center">
                             <button
