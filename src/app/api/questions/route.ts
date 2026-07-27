@@ -41,7 +41,6 @@ export async function GET(request: NextRequest) {
             ]),
         ]);
 
-        // ✅ Convert MongoDB cursors to arrays
         easy = easy || [];
         medium = medium || [];
         hard = hard || [];
