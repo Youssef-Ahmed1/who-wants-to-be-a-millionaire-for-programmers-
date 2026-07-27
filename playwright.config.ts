@@ -34,5 +34,6 @@ export default defineConfig({
         command: "npm run dev",
         url: "http://localhost:3000",
         reuseExistingServer: !process.env.CI,
+        env: process.env as Record<string, string>, // 👈 Type cast here
     },
 });

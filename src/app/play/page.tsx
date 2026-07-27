@@ -360,7 +360,7 @@ to stop the timer till the choices are eliminated
                 </div>
 
                 {/* LADDER */}
-                <div className="md:w-35 lg:w-43 xl:w-55 flex-shrink-0 bg-slate-900/50 border-l border-slate-800 p-4 overflow-y-auto">
+                <div className="hidden md:block md:w-48 lg:w-56 flex-shrink-0 bg-slate-900/50 border-l border-slate-800 p-4 overflow-y-auto">
                     <ProgressLadder
                         key={currentQuestionIndex}
                         currentIndex={currentQuestionIndex}
