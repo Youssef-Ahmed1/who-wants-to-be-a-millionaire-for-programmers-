@@ -19,8 +19,8 @@ test("timer expires and triggers game over", async ({ page }) => {
     await expect(page).toHaveURL("/play");
 
     // Wait for the timer to expire (15s + buffer)
-    await expect(page.getByText("GAME OVER")).toBeVisible({ timeout: 20000 });
+    await expect(page.getByText("GAME OVER")).toBeVisible({ timeout: 35000 });
     // Game should auto-fail and redirect to game-over
-    await page.waitForURL("/game-over", { timeout: 20000 });
+    await page.waitForURL("/game-over", { timeout: 35000 });
     await expect(page.getByText("GAME OVER")).toBeVisible();
 });

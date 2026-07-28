@@ -2,24 +2,26 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Lifelines', () => {
 test.beforeEach(async ({ page }) => {
-    // 1. Go to login
-    await page.goto('/login');
+    // 1. Navigate to home
+    await page.goto("/");
 
-    // 2. Fill credentials (seeded user)
-    await page.fill('input[name="email"]', 'test@test.com');
-    await page.fill('input[name="password"]', 'smileyCat123');
+    // 2. If redirected to login, authenticate
+    if (page.url().includes("/login")) {
+        await page.fill('input[name="email"]', "test@test.com");
+        await page.fill('input[name="password"]', "smileyCat123");
+        await page.click('button[type="submit"]');
+        await expect(page).toHaveURL(/\/$/, { timeout: 10000 });
+    }
 
-    // 3. Submit
-    await page.click('button[type="submit"]');
-
-    // 4. Wait for redirect to home
-    await expect(page).toHaveURL('/', { timeout: 10000 });
-
-    // 5. Start game
+    // 3. Start game
     await page.click('button:has-text("Frontend Mastery")');
-    await expect(page).toHaveURL('/play');
-});
+    await expect(page).toHaveURL("/play");
 
+    // 🛑 4. WAIT FOR ASYNC QUESTION FETCH TO COMPLETE
+    await expect(page.getByText("Loading the Gauntlet...")).not.toBeVisible({
+        timeout: 10000,
+    });
+});
   test('50/50 hides two wrong options', async ({ page }) => {
  const answerButtons = page.locator("div.grid > button");
  await expect(answerButtons).toHaveCount(4);
