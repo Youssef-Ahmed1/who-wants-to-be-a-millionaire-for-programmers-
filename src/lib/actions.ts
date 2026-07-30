@@ -9,6 +9,32 @@ import bcrypt from "bcryptjs";
 import { User } from "../models/user";
 import { auth } from "../auth";
 
+
+
+{
+    /*
+
+this file uses the use server as most of the things
+ happening are on the backend and contains the core logic of the function
+ 1. saveHighScore that saves the user score if they are registered
+ and makes sure that the saved score is the higest score that the user
+ have achieved so far
+
+
+2. authenticate that authenticates
+ the data that comes from the
+  registeration form and redirects
+  the user ento the homepage right after
+
+3.registerUser that defines the data needed to
+ register and makes sure that the email isn't
+  already used in the database salts the password
+  and then registers the user in the database
+
+    */
+}
+
+
 // export async function seedDatabase() {
 //     try {
 //         await connectToDatabase();

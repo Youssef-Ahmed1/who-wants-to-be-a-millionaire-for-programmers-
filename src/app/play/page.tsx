@@ -12,6 +12,52 @@ import ProgressLadder from "@/components/ui/ProgressLadder";
 import { playCorrect, playWrong, playTick, stopTick } from "@/lib/sound";
 import { motion, AnimatePresence } from "framer-motion";
 
+
+
+
+{
+    /*
+    the main game page has the function GameBoard it
+     has uses all the other files together to
+     make the game work as well as add parts like
+     adding timer handlers if the correct answer
+     is pressed or not and the questions and the UI
+
+    it handles:
+    1. state management:
+    reads active category and score mutator
+    from global zustand store (useGameStore)
+    manages local round state: current index,
+     answer selection correctness , and modal visibility
+
+     2. Data flow& hydration:
+     fetches questions dynamically on mount via
+            const url = `/api/questions?category=
+             ${encodeURIComponent(selectedCategory)}`;
+
+             employs a hasFetched ref guard to prevent
+              React 18/19 strict mode double-fetching.
+
+              3. timer & stale closure
+
+            Executes a 30-second countdown interval
+            with auto-fail timeout handling.
+
+            Synchronizes `selectedAnswerRef` to bypass
+             stale closure traps inside `setInterval`
+
+            4. lineline & audio lifecycle:
+
+            Executes probabilistically weighted lifelines
+             (StackOverflow votes, Senior Dev phone calls, 50/50 filter).
+             Coordinates sound triggers
+             (`playTick`, `playCorrect`, `playWrong`)
+             with explicit unmount cleanup (`stopTick`).
+
+             */
+}
+
+
 export default function GameBoard() {
     const router = useRouter();
     const { incrementScore, selectedCategory } = useGameStore();
@@ -190,7 +236,6 @@ to stop the timer till the choices are eliminated
         stopTick();
         setIsTimerActive(false);
 
-        // ✅ Case-insensitive answer checking consistency
         const correct =
             option.toLowerCase().trim() ===
             currentQuestion.correctAnswer.toLowerCase().trim();
@@ -198,7 +243,6 @@ to stop the timer till the choices are eliminated
         setIsCorrect(correct);
         setSelectedAnswer(option);
 
-        // ✅ Fix: Play appropriate sound effect on click
         if (correct) {
             playCorrect();
         } else {
@@ -262,7 +306,6 @@ to stop the timer till the choices are eliminated
                 </span>
             </div>
 
-            {/* MAIN CONTENT - ✅ Fix: Removed broken 'relative left-15' class */}
             <div className="flex-1 flex flex-col md:flex-row">
                 <div className="flex-1 flex items-center justify-center p-3 md:p-8">
                     <div className="w-full max-w-4xl bg-slate-900/80 p-4 md:p-10 rounded-2xl border border-slate-800 shadow-2xl backdrop-blur-sm">
@@ -376,7 +419,6 @@ to stop the timer till the choices are eliminated
                 </div>
             </div>
 
-            {/* ✅ Fix: Added AnimatePresence wrapper for modal transitions */}
             <AnimatePresence>
                 {showAudienceModal && (
                     <motion.div

@@ -1,12 +1,40 @@
 
     import { Question } from '@/types';
 
-    export const generateStackOverflowVotes = (currentQuestion: Question): number[] => {
-        const correctIndex = currentQuestion.options.findIndex(
-            (option: string) => option == currentQuestion.correctAnswer,
-        );
-        let correctPercentage: number;
 
+
+
+{
+    /*
+    the main file that defines the core logic
+     of lifelines which are:
+     1. StackOverflow model
+     2. phone a senior
+
+
+     1. the stackoverflow model works with a level
+     based ranking system for level one the answer gets 85ish
+     where level two gets 50ish and the lastly level three 40ish and spreads the remaining precentage on the other options randomly
+
+
+     2. phone a senior model works by the
+     same logic of generating the answer based on the level
+      of the question and answers as the senior
+      response is either harsh or kind
+       depending on the level of the question
+    */
+}
+
+
+
+    export const generateStackOverflowVotes = (currentQuestion: Question): number[] => {
+
+
+        let correctPercentage: number;
+        const targetAnswer = currentQuestion.correctAnswer.trim().toLowerCase();
+         const correctIndex = currentQuestion.options.findIndex(
+             (option: string) => option.trim().toLowerCase() === targetAnswer,
+         );
         currentQuestion.correctAnswer.toLowerCase();
         if (currentQuestion.level == 1) {
             correctPercentage = Math.floor(Math.random() * (95 - 85 + 1)) + 85;

@@ -6,6 +6,22 @@ import { User } from "./models/user";
 import bcrypt from "bcryptjs";
 
 
+
+{
+    /*
+    first doing  the basic hooks of
+    handlers , singIn , singOut and auth that all have
+     in common  the email and the password
+     and makes sure that the credentials
+     match the database while it waits
+      for the database to connect
+      and searches for the user in the database
+      via email to make sure that the user exists
+      and then makes sure that the password matches
+      with the database password that is salted
+    */
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
         CredentialsProvider({

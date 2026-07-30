@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { saveHighScore } from "../../lib/actions";
 import { useState } from "react";
 import { ladderSteps } from "@/lib/ladderData";
-// Career mapping based on score
+
+
+
 const careerMessages = [
     {
         range: [0, 0],

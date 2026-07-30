@@ -2,6 +2,15 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { Question } from "@/models/Question";
 import { NextRequest } from "next/server";
 
+
+{
+    /*
+
+this file contains mulitple functions which are:
+shuffleArray which shuffles the array and make it
+
+    */
+}
 function shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -25,7 +34,6 @@ export async function GET(request: NextRequest) {
     try {
         await connectToDatabase();
 
-        // ✅ Fetch as many as possible, with fallback
         let [easy, medium, hard] = await Promise.all([
             Question.aggregate([
                 { $match: { category: category, level: 1 } },
@@ -45,12 +53,10 @@ export async function GET(request: NextRequest) {
         medium = medium || [];
         hard = hard || [];
 
-        // ✅ Combine and sort by level
         let questions = [...easy, ...medium, ...hard].sort(
             (a, b) => a.level - b.level,
         );
 
-        // ✅ If we have fewer than 15 questions, duplicate some to fill the gap
         if (questions.length < 15 && questions.length > 0) {
             const total = questions.length;
             while (questions.length < 15) {
@@ -59,7 +65,6 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // ✅ If STILL no questions, return a fallback
         if (questions.length === 0) {
             return Response.json(
                 { error: "No questions available for this category" },
@@ -67,7 +72,6 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // ✅ Shuffle options
         const shuffledQuestions = questions.map((q) => ({
             ...q,
             options: shuffleArray(q.options),

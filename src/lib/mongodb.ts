@@ -1,6 +1,18 @@
 // src/lib/mongodb.ts
 import mongoose from "mongoose";
 
+
+
+
+{
+    /* makes a variable that connects with
+     the local env to be used  instead
+      then another variable that caches the
+      connection to the mongoose database
+
+     */
+}
+
 const MONGODB_URI:any = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
@@ -26,7 +38,7 @@ export async function connectToDatabase() {
         cached.promise = mongoose
             .connect(MONGODB_URI, opts)
             .then((mongoose) => {
-                console.log("🔥 Successfully connected to MongoDB!");
+                console.log("Successfully connected to MongoDB!");
                 return mongoose;
             });
     }

@@ -1,6 +1,5 @@
 // src/app/leaderboard/page.tsx
-import Link from "next/link";
- import { Button } from "@/components/ui/button";
+
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "../../models/user";
 
