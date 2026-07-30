@@ -386,7 +386,7 @@ to stop the timer till the choices are eliminated
                         transition={{ duration: 0.3 }}
                         className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
                     >
-                        <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+                        <div className="bg-slate-900 border border-slate-700 p-4 md:p-8 rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-y-auto flex flex-col justify-between">
                             <h2 className="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-2">
                                 StackOverflow Says...
                             </h2>
@@ -435,7 +435,7 @@ to stop the timer till the choices are eliminated
                         transition={{ duration: 0.3 }}
                         className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
                     >
-                        <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+                        <div className="bg-slate-900 border border-slate-700 p-4 md:p-8 rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-y-auto flex flex-col justify-between">
                             <h2 className="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
                                 🧙‍♂️ Your Senior Dev Friend Says...
                             </h2>
